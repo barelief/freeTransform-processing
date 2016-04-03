@@ -51,6 +51,7 @@ void debug()
   text("final ∠: " + decimalPoint( diff.heading() )+ " (" + (int)degrees(diff.heading())+  ")", 0, 60);
   text("box ∠: " + degrees(boxAngle), 0, 80);
   popMatrix();
+  println(HALF_PI);
 }
 
 void showGuides()
@@ -103,4 +104,3 @@ float decimalPoint(float input)
   return (float )round(input*100) / 100 ;
   // return input;
 }
-

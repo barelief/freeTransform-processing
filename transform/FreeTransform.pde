@@ -11,7 +11,7 @@
 * 
 */
 
-class Polygon
+public class Polygon
 {
   int selectedPoint = -1; // currently mouse selected point http://i.imgur.com/Iq2ZZhT.jpg
   int selectedLine = -1; // currently mouse selected line

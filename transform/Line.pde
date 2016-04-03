@@ -9,7 +9,7 @@
 * 
 */
 
-class Line 
+public class Line
 {
   PVector start; // begin point of the line
   PVector end; // end point of the line

@@ -1,12 +1,12 @@
 /**
-*
-* External images code
-*
-* @author Bartosh Polonski
-* @version 0.prototype
-* @since 2015-09-13
-* 
-*/
+ *
+ * External images code
+ *
+ * @author Bartosh Polonski
+ * @version 0.prototype
+ * @since 2015-09-13
+ * 
+ */
 
 PImage img; // load random image to be transformed
 
@@ -48,7 +48,12 @@ void displayCursors()
 
   case ROTATE:
     noCursor();
-    image(cursor[2], P.x, P.y);
+    PVector diff = PVector.sub(P, quad.anchor);
+    pushMatrix();
+    translate(P.x, P.y);
+    rotate(angleCorners(diff));
+    image(cursor[2], 0, 0);
+    popMatrix();
     break;
 
   case DRAG_AREA:
@@ -73,4 +78,20 @@ void displayCursors()
   case NONE:
     cursor();
   }
+}
+// display rotate cursor according to cursor-anchor angle
+float angleCorners(PVector diff)
+{
+  float angle = 0;
+  
+  if (HALF_PI>diff.heading() && diff.heading()>0)
+    angle = 0;
+  if (PI>diff.heading()&& diff.heading() >HALF_PI)
+    angle = HALF_PI;
+  if (-PI<diff.heading()&& diff.heading()<-HALF_PI)
+    angle = PI;
+  if (0>diff.heading()&& diff.heading()>-HALF_PI)
+    angle = -HALF_PI;
+  
+  return angle;
 }

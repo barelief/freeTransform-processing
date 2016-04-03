@@ -6,3 +6,5 @@ application.windows32
 application.windows64
 application.macosx
 transform/data/cat.jpg
+transform/session.npp
+transform/data/data.json
