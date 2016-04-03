@@ -34,6 +34,9 @@ void loadCursors()
 // display cursors based on current inteactive state
 void displayCursors()
 {
+  PVector diff = new PVector();
+  diff = PVector.sub(P, quad.anchor);
+  imageMode(CENTER);
   switch (quad.state)
   {
   case DRAG_FREE_LINE:
@@ -43,15 +46,20 @@ void displayCursors()
 
   case SCALE_PROPORTIONALLY_LINE:
     noCursor();
-    image(cursor[3], P.x, P.y);
+
+    pushMatrix();
+    translate(P.x, P.y);
+    rotate(angleCorners(diff,1));
+    image(cursor[3], 0, 0);
+    popMatrix();
     break;
 
   case ROTATE:
     noCursor();
-    PVector diff = PVector.sub(P, quad.anchor);
+    diff = PVector.sub(P, quad.anchor);
     pushMatrix();
     translate(P.x, P.y);
-    rotate(angleCorners(diff));
+    rotate(angleCorners(diff,2));
     image(cursor[2], 0, 0);
     popMatrix();
     break;
@@ -68,30 +76,51 @@ void displayCursors()
 
   case SCALE_PORPORTIONALLY_POINT:
     noCursor();
-    image(cursor[3], P.x, P.y);
+    diff = PVector.sub(P, quad.anchor);
+    pushMatrix();
+    translate(P.x, P.y);
+    rotate(angleCorners(diff,1));
+    image(cursor[3], 0, 0);
+    popMatrix();
     break;
 
   case SCALE_FREE_POINT:
     noCursor();
-    image(cursor[3], P.x, P.y);
+    diff = PVector.sub(P, quad.anchor);
+    pushMatrix();
+    translate(P.x, P.y);
+    rotate(angleCorners(diff,1));
+    image(cursor[3], 0, 0);
+    popMatrix();
     break;
   case NONE:
     cursor();
   }
 }
-// display rotate cursor according to cursor-anchor angle
-float angleCorners(PVector diff)
+
+// display rotate cursor according to cursor-anchor angle http://i.imgur.com/NG5pNH9.jpg
+// http://i.imgur.com/NG5pNH9.jpg
+// offset = 1 rotates more angles (for scale cursor_ offset =2 rotates les foter (for rotate cursor)
+
+float angleCorners(PVector diff, int offset)
 {
   float angle = 0;
+  float[] angles = {-PI, -(HALF_PI+HALF_PI/2), -HALF_PI, -HALF_PI/2, 0, HALF_PI/2, HALF_PI, HALF_PI+HALF_PI/2, PI};
   
+  for (int i=0; i<angles.length; i+=offset)
+  {
+    if (diff.heading()>angles[i] && diff.heading()<angles[i+1])
+      angle = angles[i];
+  }
+  /*
   if (HALF_PI>diff.heading() && diff.heading()>0)
-    angle = 0;
-  if (PI>diff.heading()&& diff.heading() >HALF_PI)
-    angle = HALF_PI;
-  if (-PI<diff.heading()&& diff.heading()<-HALF_PI)
-    angle = PI;
-  if (0>diff.heading()&& diff.heading()>-HALF_PI)
-    angle = -HALF_PI;
-  
+   angle = 0;
+   if (PI>diff.heading()&& diff.heading() >HALF_PI)
+   angle = HALF_PI;
+   if (-PI<diff.heading()&& diff.heading()<-HALF_PI)
+   angle = PI;
+   if (0>diff.heading()&& diff.heading()>-HALF_PI)
+   angle = -HALF_PI;
+   */
   return angle;
 }

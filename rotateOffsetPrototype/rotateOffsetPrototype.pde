@@ -31,27 +31,28 @@ void draw()
   diff = PVector.sub(P, anchorPoint);
   debug();
   update();
- // showGuides();
+  // showGuides();
   theBox();
 }
 
 void update()
 {
   P.set(mouseX, mouseY);
- //offsetAngle =  diff.heading();
+  //offsetAngle =  diff.heading();
 }
 
 void debug()
 {
   fill(0);
   pushMatrix();
-  translate(40,20);
+  translate(40, 20);
   text("∠ betw anch / P: " + decimalPoint( PVector.angleBetween(anchorPoint, P) ) + " (" + (int)degrees(PVector.angleBetween(anchorPoint, P))+  ")", 0, 20);
   text("∠ heading P: " + decimalPoint( P.heading() )+ " (" +(int)degrees(P.heading())+  ")", 0, 40);
   text("final ∠: " + decimalPoint( diff.heading() )+ " (" + (int)degrees(diff.heading())+  ")", 0, 60);
   text("box ∠: " + degrees(boxAngle), 0, 80);
   popMatrix();
   println(HALF_PI);
+  angleCorners(diff);
 }
 
 void showGuides()
@@ -68,8 +69,6 @@ void showGuides()
   strokeWeight(1);
   line(0, 0, diff.x, diff.y);
   popMatrix();
-
- 
 }
 
 void theBox()
@@ -83,7 +82,7 @@ void theBox()
   rectMode(CENTER);
   rect(0, 0, 150, 150); 
   //ellipse(60,60,10,10);
-  rect(60,60,5,5);
+  rect(60, 60, 5, 5);
   popMatrix();
   popStyle();
 }
@@ -103,4 +102,21 @@ float decimalPoint(float input)
   // return ( round(input * 100) ) ;
   return (float )round(input*100) / 100 ;
   // return input;
+}
+
+void  angleCorners(PVector diff, int offset)
+{
+  //loat angle = 0;
+  float[] angles = {-PI, -(HALF_PI+HALF_PI/2), -HALF_PI, -HALF_PI/2, 0, HALF_PI/2, HALF_PI, HALF_PI+HALF_PI/2, PI};
+  
+  for (int i=0; i<angles.length; i+=offset)
+  {
+    if (diff.heading()>angles[i] && diff.heading()<angles[i+1])
+    {
+      //angle = angles[i];
+      text(i+": "+diff.heading(), 20, 200);
+    }
+  }
+
+  //return angle;
 }
