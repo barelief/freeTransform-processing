@@ -1,17 +1,13 @@
 <NotepadPlus>
-    <Session activeView="1">
-        <mainView activeIndex="3">
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="168" startPos="0" endPos="0" selMode="0" lang="Normal Text" encoding="-1" filename="C:\Users\bare\Desktop\todo.txt" backupFilePath="" originalFileLastModifTimestamp="1442354005" />
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="1368" startPos="0" endPos="0" selMode="0" lang="Java" encoding="-1" filename="C:\of\apps\redmap\prototypes\p5\transform\FreeTransform.pde" backupFilePath="" originalFileLastModifTimestamp="1442220958" />
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="1368" startPos="0" endPos="0" selMode="0" lang="Java" encoding="-1" filename="C:\of\apps\redmap\prototypes\p5\transform\interaction.pde" backupFilePath="" originalFileLastModifTimestamp="1442177508" />
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="1368" startPos="0" endPos="0" selMode="0" lang="Java" encoding="-1" filename="C:\of\apps\redmap\prototypes\p5\transform\Line.pde" backupFilePath="" originalFileLastModifTimestamp="1442179722" />
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="1" startPos="0" endPos="0" selMode="0" lang="Java" encoding="-1" filename="C:\of\apps\redmap\prototypes\p5\transform\media.pde" backupFilePath="" originalFileLastModifTimestamp="1442177754" />
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="1368" startPos="0" endPos="0" selMode="0" lang="Java" encoding="-1" filename="C:\of\apps\redmap\prototypes\p5\transform\Point.pde" backupFilePath="" originalFileLastModifTimestamp="1442178627" />
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="1" startPos="0" endPos="0" selMode="0" lang="Java" encoding="-1" filename="C:\of\apps\redmap\prototypes\p5\transform\State.java" backupFilePath="" originalFileLastModifTimestamp="1442177420" />
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="1208" startPos="0" endPos="0" selMode="0" lang="Java" encoding="-1" filename="C:\of\apps\redmap\prototypes\p5\transform\transform.pde" backupFilePath="" originalFileLastModifTimestamp="1442177785" />
+    <Session activeView="0">
+        <mainView activeIndex="5">
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1510" startPos="0" endPos="0" selMode="0" lang="Java" encoding="-1" filename="C:\Users\bare\Documents\Processing\freeTransform-processing\transform\FreeTransform.pde" backupFilePath="" originalFileLastModifTimestamp="1442220958" />
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1510" startPos="0" endPos="0" selMode="0" lang="Java" encoding="-1" filename="C:\Users\bare\Documents\Processing\freeTransform-processing\transform\interaction.pde" backupFilePath="" originalFileLastModifTimestamp="1442177508" />
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1510" startPos="0" endPos="0" selMode="0" lang="Java" encoding="-1" filename="C:\Users\bare\Documents\Processing\freeTransform-processing\transform\Line.pde" backupFilePath="" originalFileLastModifTimestamp="1442179722" />
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1510" startPos="0" endPos="0" selMode="0" lang="Java" encoding="-1" filename="C:\Users\bare\Documents\Processing\freeTransform-processing\transform\media.pde" backupFilePath="" originalFileLastModifTimestamp="1442177754" />
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1710" startPos="0" endPos="0" selMode="0" lang="Java" encoding="-1" filename="C:\Users\bare\Documents\Processing\freeTransform-processing\transform\Point.pde" backupFilePath="" originalFileLastModifTimestamp="1442178627" />
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1710" startPos="0" endPos="0" selMode="0" lang="Java" encoding="-1" filename="C:\Users\bare\Documents\Processing\freeTransform-processing\transform\transform.pde" backupFilePath="" originalFileLastModifTimestamp="1459544979" />
         </mainView>
-        <subView activeIndex="0">
-            <File firstVisibleLine="0" xOffset="0" scrollWidth="1208" startPos="1499" endPos="1499" selMode="0" lang="Java" encoding="-1" filename="C:\of\apps\redmap\prototypes\p5\transform\FreeTransform.pde" backupFilePath="" originalFileLastModifTimestamp="1442220958" />
-        </subView>
+        <subView activeIndex="0" />
     </Session>
 </NotepadPlus>

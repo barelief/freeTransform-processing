@@ -57,9 +57,9 @@ class Line
   }
 
   // find dot product - this one is very important, does all the tricks :)
-  void detectX() 
+  void detectX(PVector P_) 
   {
-    PVector AP = PVector.sub(P, beginStart);
+    PVector AP = PVector.sub(P_, beginStart);
     PVector AB = PVector.sub(beginEnd, beginStart);
 
     // find dot product:
@@ -99,14 +99,14 @@ class Line
     stroke(lineColor);
   }
 
-  void resetLockPoints()
+  void resetLockPoints(PVector P_)
   {
     // make lock points (beginStart,beginEnd,beginX,beginP) same as original (A,B,X,P)
     // beginP.set(P); // lock the beginning position of the offset vector
     beginStart.set(start); // lock the beginning of the vector A to be transformed
     beginEnd.set(end); // lock the beginning of the vector B to be transformed
 
-    detectX(); // find X, otherwise beginX will be (0,0) ;)
+    detectX(P_); // find X, otherwise beginX will be (0,0) ;)
     beginX.set(X); // lock the beginning of the vector X to be transformed
   }
 
@@ -139,7 +139,7 @@ class Line
 
   void draw() 
   {
-    detectX();
+    detectX(P);
     // update();
     render();
     // displayDebugInformation();
@@ -244,4 +244,3 @@ class Line
     return line_itersection(this, other);
   }
 }
-

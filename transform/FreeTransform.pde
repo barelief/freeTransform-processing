@@ -38,7 +38,9 @@ class Polygon
   // interaction vars
   PVector offsetP; // offset made with P
   PVector beginOffsetP; // initial P position to calculate offestP from it
-
+  PVector offset;  // offset to move point offsetP made by moving user point P (check offsetPooint.pde)
+  PVector beginOffset; // check check offsetPooint.pde NEED MORE explanation
+  
   // boolean pointLockedToMouse = false; // if one of four points is dragged, then ignore other points by locking the selected one
   
   boolean polygonLockedToMouse = false;
@@ -63,6 +65,8 @@ class Polygon
     // interaction vars
     offsetP = new PVector();
     beginOffsetP = new PVector();
+    beginOffset = new PVector(); 
+    offset= new PVector();
     anchorLine = new PVector();
     lockAnchor = new PVector();
 
@@ -565,7 +569,7 @@ class Polygon
     mouseLockedToLine = true;
     beginOffsetP.set(P); // lock the beginning position of the offset vector
     for (int i=0; i<amount; i++) 
-      line[i].resetLockPoints(); // check
+      line[i].resetLockPoints(P); // check
   }
 
   // Drag the selected line
@@ -588,9 +592,9 @@ class Polygon
     oppositeLine = line[neighbor(selectedLine)[2]];
 
     // reset their start values
-    leftNeighborLine.resetLockPoints();
-    rightNeighborLine.resetLockPoints();
-    oppositeLine.resetLockPoints();
+    leftNeighborLine.resetLockPoints(P);
+    rightNeighborLine.resetLockPoints(P);
+    oppositeLine.resetLockPoints(P);
 
     beginP.set(P);
   }
@@ -598,7 +602,7 @@ class Polygon
   // http://i.imgur.com/VnX6EWr.gif TODO: remove bounce effect
   void lineScaleProportional()
   {
-    oppositeLine.detectX();
+    oppositeLine.detectX(P);
     float scaleFactor;
     scaleFactor = oppositeLine.X.dist(P) / oppositeLine.beginX.dist(beginP);
     PVector XP = new PVector(); // temporary vector XP http://i.imgur.com/bKosZNr.jpg
@@ -626,23 +630,35 @@ class Polygon
   // http://i.imgur.com/qXuA8Pa.gif
   void setupPointScaleFree()
   {
+    beginOffsetP.set(P);
+    
     leftOppositeLine = neighborOppositeLinesFromPoint(selectedPoint)[0];
     rightOppositeLine = neighborOppositeLinesFromPoint(selectedPoint)[1];
-    leftOppositeLine.resetLockPoints();
-    rightOppositeLine.resetLockPoints();
+    leftOppositeLine.resetLockPoints(P);
+    rightOppositeLine.resetLockPoints(P);
     beginP.set(P);
+    beginOffsetP.set(P);
+    
+    beginOffset.set(mouseX, mouseY); // lock the beginning position of the offset vector
+    beginOffsetP.set(point[selectedPoint].position); // lock the beginning of the vector to be transformed
   }
 
   // when draggin one the points, you freely scale the polygon
   // http://i.imgur.com/qXuA8Pa.gif
   void pointScaleFree()
   {
-    leftOppositeLine.detectX(); // update X (dot product magic) constantly
-    rightOppositeLine.detectX(); // update X (dot product magic) constantly
+    //offsetP = PVector.sub(P, beginOffsetP); // get the offset (because mouse isnt' exatly at the pressed point, there a little offset)
+    
+    offset = PVector.sub(P, beginOffset); // calculate the offset made by mouseDrag -- subtract beginOffset from P
+    offsetP = PVector.add(beginOffsetP, offset); // reposition point A based the offset made
+
+    
+    leftOppositeLine.detectX(offsetP); // update X (dot product magic) constantly
+    rightOppositeLine.detectX(offsetP); // update X (dot product magic) constantly
 
     float scaleFactorRight, scaleFactorLeft;
-    scaleFactorRight = rightOppositeLine.X.dist(P) / rightOppositeLine.beginX.dist(beginP);
-    scaleFactorLeft = leftOppositeLine.X.dist(P) / leftOppositeLine.beginX.dist(beginP);
+    scaleFactorRight = rightOppositeLine.X.dist(offsetP) / rightOppositeLine.beginX.dist(beginOffsetP);
+    scaleFactorLeft = leftOppositeLine.X.dist(offsetP) / leftOppositeLine.beginX.dist(beginOffsetP);
 
     // needs exaplainin drawing
     PVector tmpR = new PVector();
@@ -664,7 +680,7 @@ class Polygon
 
     // set right neighbor point
     point[neighbor(selectedPoint)[1]].position.set(tmpR);
-    point[selectedPoint].position.set(P);
+    point[selectedPoint].position.set(offsetP);
     selectedLine = -1; // disable line focus
     updateGlobalLines();
   }
@@ -674,7 +690,7 @@ class Polygon
   void setupScalePointProportionally()
   {
     diagonal = new Line (point[neighbor(selectedPoint)[2]].position, point[selectedPoint].position);
-    diagonal.resetLockPoints();
+    diagonal.resetLockPoints(P);
   }
 
   // This function is called whie dragging the selected point at SCALE_PORPORTIONALLY_POINT state,  
@@ -682,7 +698,7 @@ class Polygon
   void scalePointProportionally()
   {
     // offsetP = PVector.sub(P, beginP); // calculate the offset made by P
-    diagonal.detectX(); // aka find X
+    diagonal.detectX(P); // aka find X
     // diagonal.offsetX = PVector.sub(diagonal.X, diagonal.beginX); // calculate the offset made by X
     diagonal.end = PVector.add(diagonal.beginEnd, diagonal.offsetX);
     diagonalScaleFactor = diagonal.start.dist(diagonal.X) / diagonal.start.dist(diagonal.beginX);
@@ -766,4 +782,3 @@ class Polygon
     return c;
   }
 }
-
