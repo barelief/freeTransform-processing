@@ -37,6 +37,7 @@ void displayCursors()
   PVector diff = new PVector();
   diff = PVector.sub(P, quad.anchor);
   imageMode(CENTER);
+  
   switch (quad.state)
   {
   case DRAG_FREE_LINE:
@@ -49,7 +50,7 @@ void displayCursors()
 
     pushMatrix();
     translate(P.x, P.y);
-    rotate(angleCorners(diff,1));
+    rotate(cursorAngle(diff));
     image(cursor[3], 0, 0);
     popMatrix();
     break;
@@ -59,7 +60,7 @@ void displayCursors()
     diff = PVector.sub(P, quad.anchor);
     pushMatrix();
     translate(P.x, P.y);
-    rotate(angleCorners(diff,2));
+    rotate(cursorAngle(diff));
     image(cursor[2], 0, 0);
     popMatrix();
     break;
@@ -79,7 +80,7 @@ void displayCursors()
     diff = PVector.sub(P, quad.anchor);
     pushMatrix();
     translate(P.x, P.y);
-    rotate(angleCorners(diff,1));
+    rotate(cursorAngle(diff));
     image(cursor[3], 0, 0);
     popMatrix();
     break;
@@ -89,7 +90,7 @@ void displayCursors()
     diff = PVector.sub(P, quad.anchor);
     pushMatrix();
     translate(P.x, P.y);
-    rotate(angleCorners(diff,1));
+    rotate(cursorAngle(diff));
     image(cursor[3], 0, 0);
     popMatrix();
     break;
@@ -100,27 +101,17 @@ void displayCursors()
 
 // display rotate cursor according to cursor-anchor angle http://i.imgur.com/NG5pNH9.jpg
 // http://i.imgur.com/NG5pNH9.jpg
-// offset = 1 rotates more angles (for scale cursor_ offset =2 rotates les foter (for rotate cursor)
 
-float angleCorners(PVector diff, int offset)
+float cursorAngle(PVector diff)
 {
   float angle = 0;
   float[] angles = {-PI, -(HALF_PI+HALF_PI/2), -HALF_PI, -HALF_PI/2, 0, HALF_PI/2, HALF_PI, HALF_PI+HALF_PI/2, PI};
   
-  for (int i=0; i<angles.length; i+=offset)
+  for (int i=0; i<angles.length; i++)
   {
     if (diff.heading()>angles[i] && diff.heading()<angles[i+1])
       angle = angles[i];
   }
-  /*
-  if (HALF_PI>diff.heading() && diff.heading()>0)
-   angle = 0;
-   if (PI>diff.heading()&& diff.heading() >HALF_PI)
-   angle = HALF_PI;
-   if (-PI<diff.heading()&& diff.heading()<-HALF_PI)
-   angle = PI;
-   if (0>diff.heading()&& diff.heading()>-HALF_PI)
-   angle = -HALF_PI;
-   */
+
   return angle;
 }
