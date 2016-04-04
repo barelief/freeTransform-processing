@@ -60,7 +60,7 @@ void displayCursors()
     diff = PVector.sub(P, quad.anchor);
     pushMatrix();
     translate(P.x, P.y);
-    rotate(cursorAngle(diff));
+    rotate(rotateCursorAngle(diff));
     image(cursor[2], 0, 0);
     popMatrix();
     break;
@@ -106,6 +106,21 @@ float cursorAngle(PVector diff)
 {
   float angle = 0;
   float[] angles = {-PI, -(HALF_PI+HALF_PI/2), -HALF_PI, -HALF_PI/2, 0, HALF_PI/2, HALF_PI, HALF_PI+HALF_PI/2, PI};
+  
+  for (int i=0; i<angles.length; i++)
+  {
+    if (diff.heading()>angles[i] && diff.heading()<angles[i+1])
+      angle = angles[i];
+  }
+
+  return angle;
+}
+
+// rotate cursor angle method to reduce angle to four simplified states
+float rotateCursorAngle(PVector diff)
+{
+  float angle = 0;
+  float[] angles = {-PI, -HALF_PI, 0, HALF_PI, PI};
   
   for (int i=0; i<angles.length; i++)
   {
