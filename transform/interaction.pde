@@ -40,6 +40,7 @@ void keyReleased()
   {
     quad.pointMode = 0; // if no key is selected then return to deafault mode (SCALE_FREE_POINT)
     quad.lineMode = 0; // return to dafault mode SCALE_PROPORTIONALLY_LINE
+    quad.rotateMode = 0;
     savePoints(); // save current polygon points to external file
   }
 }
@@ -158,10 +159,12 @@ void keyPressed()
     case CONTROL:
       quad.pointMode = 1; // state = DRAG_FREE_POINT
       quad.lineMode = 1; // state = DRAG_FREE_LINE
+      
       break;
 
     case SHIFT: 
       quad.pointMode = 2; // state = SCALE_PORPORTIONALLY_POINT
+      quad.rotateMode = 1; // rotate with a 45 degree step
       break;
     }
     break;

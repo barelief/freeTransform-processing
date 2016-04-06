@@ -99,7 +99,7 @@ class Point
   void rotate()
   {
     offsetAngle = quad.anchorLine.heading() - startOffsetAngle; // rotate offset made beginning with 0 (mousePressed), ending with final mouseDragged
-    angle = startAngle + offsetAngle; // final rotation amount
+    angle = startAngle + offsetAngle; // final rotation amount  
     tmp = PVector.sub(beginPosition, quad.lockAnchor); // create temporary (absolute position) vector from anchor to point A
     tmp.rotate(-tmp.heading()); // back to initial position
     tmp.rotate(angle); // add your desired rotation amount

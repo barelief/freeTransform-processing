@@ -9,6 +9,7 @@
  */
 
 PImage img; // load random image to be transformed
+PImage bg;
 
 // display image as a texture
 void drawTexture()

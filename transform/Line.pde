@@ -59,8 +59,8 @@ public class Line
   // find dot product - this one is very important, does all the tricks :)
   void detectX(PVector P_) 
   {
-    PVector AP = PVector.sub(P_, beginStart);
-    PVector AB = PVector.sub(beginEnd, beginStart);
+    PVector AP = PVector.sub(P_, beginStart); // 
+    PVector AB = PVector.sub(beginEnd, beginStart); // 
 
     // find dot product:
     // http://forum.processing.org/two/discussion/11420/#Comment_45987
