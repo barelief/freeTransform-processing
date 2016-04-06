@@ -49,10 +49,12 @@ void debug()
   text("∠ betw anch / P: " + decimalPoint( PVector.angleBetween(anchorPoint, P) ) + " (" + (int)degrees(PVector.angleBetween(anchorPoint, P))+  ")", 0, 20);
   text("∠ heading P: " + decimalPoint( P.heading() )+ " (" +(int)degrees(P.heading())+  ")", 0, 40);
   text("final ∠: " + decimalPoint( diff.heading() )+ " (" + (int)degrees(diff.heading())+  ")", 0, 60);
-  text("box ∠: " + degrees(boxAngle), 0, 80);
+  text("box ∠ (deg): " + degrees(boxAngle), 0, 80);
+  text("box ∠ (rad): " + boxAngle, 0, 100);
+  text("snap: ", 0,120);
   popMatrix();
   println(HALF_PI);
-  angleCorners(diff);
+  angleCorners(diff, 1);
 }
 
 void showGuides()
@@ -108,7 +110,7 @@ void  angleCorners(PVector diff, int offset)
 {
   //loat angle = 0;
   float[] angles = {-PI, -(HALF_PI+HALF_PI/2), -HALF_PI, -HALF_PI/2, 0, HALF_PI/2, HALF_PI, HALF_PI+HALF_PI/2, PI};
-  
+
   for (int i=0; i<angles.length; i+=offset)
   {
     if (diff.heading()>angles[i] && diff.heading()<angles[i+1])
@@ -119,4 +121,29 @@ void  angleCorners(PVector diff, int offset)
   }
 
   //return angle;
+}
+
+float snapAngle(float angle)
+{
+  // angle = 0;
+  float[] angles = {-PI, -(HALF_PI+HALF_PI/2), -HALF_PI, -HALF_PI/2, 0, HALF_PI/2, HALF_PI, HALF_PI+HALF_PI/2, PI};
+
+  for (int i=0; i<angles.length; i+=1)
+  {
+
+    println("angle: "+angle);
+    if ( abs(angles[i]-angle) <HALF_PI/2) 
+      angle = angles[i];
+    /* 
+     if (angle>angles[i] && angle<angles[i+1])
+     {
+     println("ok");
+     angle = angles[i];
+     //text(i+": "+diff.heading(), 20, 200);
+     }*/
+  }
+
+
+
+  return angle;
 }

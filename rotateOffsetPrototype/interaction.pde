@@ -8,7 +8,10 @@ void mousePressed()
 void mouseDragged()
 {
   offsetAngle = diff.heading() - beginOffsetAngle;
+  //offsetAngle = (offsetAngle);
   boxAngle = boxStartAngle + offsetAngle;
+ // boxAngle = snapAngle(boxAngle%PI);
+  //println("box: "+boxAngle);
 }
 
 void keyPressed()
@@ -16,4 +19,3 @@ void keyPressed()
   if (key == 'm')
     anchorPoint.set(mouseX, mouseY);
 }
-
