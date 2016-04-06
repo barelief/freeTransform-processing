@@ -35,7 +35,7 @@ void setup()
   img = loadImage("cat.jpg"); // load texture to be transformed
   bg = loadImage("bg.jpg");
   loadCursors(); // load cursor png files
-  frameRate(5); // set the frameRate of the app
+  frameRate(59); // set the frameRate of the app
   //size(600, 600); // window size 
   //size(640,353, P3D); // uncomment if using with drawTexture()
   size(600, 600, P3D);

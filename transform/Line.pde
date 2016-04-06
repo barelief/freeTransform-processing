@@ -20,6 +20,7 @@ public class Line
   int sensitivity = 20; // how close the mouse should be to the line
   PVector beginStart, beginEnd, beginX; // saving the position of start and end line points before dragging the mouse
   int id; // id of a line on a quad, see drawing to understand the id in an array of four lines: http://i.imgur.com/iyZVj78.jpg
+  boolean isOnThisSideOfLine = false; // check on which side of line is mouse
 
   // constructor 1
   Line(PVector _start, PVector _end, int id_) 
@@ -242,5 +243,26 @@ public class Line
   PVector intersects_at(Line other)
   {
     return line_itersection(this, other);
+  }
+  
+    // check on which side of line is the mouse (P)ointer
+  boolean checkLineSide(PVector P)
+  {
+    boolean oneSide = true;
+    PVector v1 = new PVector(end.x-start.x, end.y-start.y); 
+    PVector v2 = new PVector(end.x-P.x, end.y-P.y);
+
+    float xp = v1.x*v2.y - v1.y*v2.x;
+
+    if (xp > 0)
+    {
+      text( "on one side", 20, 20);
+      oneSide = true;
+    } else if (xp < 0)
+    {
+      text( "on the other", 20, 20);
+      oneSide = false;
+    }
+    return oneSide;
   }
 }
