@@ -653,17 +653,16 @@ public class Polygon
 
     beginOffset.set(mouseX, mouseY); // lock the beginning position of the offset vector
     beginOffsetP.set(point[selectedPoint].position); // lock the beginning of the vector to be transformed
-    
+
     leftOppositeLine.isOnThisSideOfLine = leftOppositeLine.checkLineSide(P); // check on which side of the mirror we are
     rightOppositeLine.isOnThisSideOfLine = rightOppositeLine.checkLineSide(P);
- }
+  }
 
   // when draggin one the points, you freely scale the polygon
   // http://i.imgur.com/qXuA8Pa.gif
   void pointScaleFree()
   {
     //offsetP = PVector.sub(P, beginOffsetP); // get the offset (because mouse isnt' exatly at the pressed point, there a little offset)
-
     offset = PVector.sub(P, beginOffset); // calculate the offset made by mouseDrag -- subtract beginOffset from P
     offsetP = PVector.add(beginOffsetP, offset); // reposition point A based the offset made
 
@@ -678,41 +677,35 @@ public class Polygon
     PVector tmpR = new PVector();
     PVector tmpL = new PVector();
 
-    if (rightOppositeLine.isOnThisSideOfLine == rightOppositeLine.checkLineSide(P))
+    if (rightOppositeLine.isOnThisSideOfLine == rightOppositeLine.checkLineSide(offsetP))
     { 
-        if (leftOppositeLine.isOnThisSideOfLine == leftOppositeLine.checkLineSide(P))
-        {
-          tmpR = PVector.sub(rightOppositeLine.beginStart, rightOppositeLine.beginEnd);
-          tmpL = PVector.sub(leftOppositeLine.beginStart, leftOppositeLine.beginEnd);
-         } 
-        else 
-        {
-          tmpR = PVector.sub(rightOppositeLine.beginEnd, rightOppositeLine.beginStart);
-          tmpL = PVector.sub(leftOppositeLine.beginStart, leftOppositeLine.beginEnd);
-        }
-    }
-     else 
+      if (leftOppositeLine.isOnThisSideOfLine == leftOppositeLine.checkLineSide(offsetP))
+      {
+        tmpR = PVector.sub(rightOppositeLine.beginStart, rightOppositeLine.beginEnd);
+        tmpL = PVector.sub(leftOppositeLine.beginStart, leftOppositeLine.beginEnd);
+      } else 
+      {
+        tmpR = PVector.sub(rightOppositeLine.beginEnd, rightOppositeLine.beginStart);
+        tmpL = PVector.sub(leftOppositeLine.beginStart, leftOppositeLine.beginEnd);
+      }
+    } else 
     { 
-    if (leftOppositeLine.isOnThisSideOfLine == leftOppositeLine.checkLineSide(P))
-        {
-          tmpR = PVector.sub(rightOppositeLine.beginStart, rightOppositeLine.beginEnd);
-          tmpL = PVector.sub(leftOppositeLine.beginEnd, leftOppositeLine.beginStart);
-        } 
-        else 
-        {
-          tmpR = PVector.sub(rightOppositeLine.beginEnd, rightOppositeLine.beginStart);
-          tmpL = PVector.sub(leftOppositeLine.beginEnd, leftOppositeLine.beginStart);
-        }      
+      if (leftOppositeLine.isOnThisSideOfLine == leftOppositeLine.checkLineSide(offsetP))
+      {
+        tmpR = PVector.sub(rightOppositeLine.beginStart, rightOppositeLine.beginEnd);
+        tmpL = PVector.sub(leftOppositeLine.beginEnd, leftOppositeLine.beginStart);
+      } else 
+      {
+        tmpR = PVector.sub(rightOppositeLine.beginEnd, rightOppositeLine.beginStart);
+        tmpL = PVector.sub(leftOppositeLine.beginEnd, leftOppositeLine.beginStart);
+      }
     }
-  
+
     // needs exaplainin drawing
-   
-    //else 
-    //  tmpL = PVector.sub(leftOppositeLine.beginEnd, leftOppositeLine.beginStart);
-    
+
     tmpL.mult(scaleFactorRight);
     tmpL.add(leftOppositeLine.end);
-    
+
     tmpR.mult(scaleFactorLeft);
     tmpR.add(rightOppositeLine.end);
 
@@ -727,23 +720,110 @@ public class Polygon
     updateGlobalLines();
   }
 
-  // Set-up proportional scaling. 
-  // This function is triggered once the mouse is pressed and focused on point while holding SHIFT)
   void setupScalePointProportionally()
   {
+
+    beginOffset.set(mouseX, mouseY); // lock the beginning position of the offset vector
+    beginOffsetP.set(point[selectedPoint].position); // lock the beginning of the vector to be transformed
+
+    leftOppositeLine = neighborOppositeLinesFromPoint(selectedPoint)[0];
+    rightOppositeLine = neighborOppositeLinesFromPoint(selectedPoint)[1];
+    leftOppositeLine.resetLockPoints(P);
+    rightOppositeLine.resetLockPoints(P);
+
+    leftOppositeLine.isOnThisSideOfLine = leftOppositeLine.checkLineSide(P); // check on which side of the mirror we are
+    rightOppositeLine.isOnThisSideOfLine = rightOppositeLine.checkLineSide(P);
+
     diagonal = new Line (point[neighbor(selectedPoint)[2]].position, point[selectedPoint].position);
-    
+    diagonal.resetLockPoints(P);
+    diagonal.beginOffsetX.set(point[selectedPoint].position); // lock the beginning of the vector to be transformed
+    diagonal.beginStart.set(diagonal.X); // lock the beginning position of the offset vector
+  }
+
+  void scalePointProportionally()
+  {
+    offset = PVector.sub(P, beginOffset); // calculate the offset made by mouseDrag -- subtract beginOffset from P
+    offsetP = PVector.add(beginOffsetP, offset); // reposition point A based the offset made
+
+    // PROPORTIONAL MODE
+    diagonal.detectX(P); // aka find X
+    // diagonal.offsetX = PVector.sub(diagonal.X, diagonal.beginX); // calculate the offset made by X
+    diagonal.end = PVector.add(diagonal.beginEnd, diagonal.offsetX);
+
+    point[selectedPoint].position.set(diagonal.end);
+
+    // offsetP = PVector.sub(P, beginOffsetP); // get the offset (because mouse isnt' exatly at the pressed point, there a little offset)
+    offset = PVector.sub(diagonal.X, diagonal.beginStart); // calculate the offset made by mouseDrag -- subtract beginOffset from P
+    diagonal.offsetX = PVector.add(diagonal.beginOffsetX, offset); // reposition point A based the offset made
+
+    diagonalScaleFactor = diagonal.start.dist(diagonal.offsetX) / diagonal.start.dist(diagonal.beginOffsetX);
+
+    // needs exaplainin drawing
+    PVector tmpR = new PVector();
+    PVector tmpL = new PVector();
+
+
+    if (rightOppositeLine.isOnThisSideOfLine == rightOppositeLine.checkLineSide(diagonal.offsetX))
+    { 
+      if (leftOppositeLine.isOnThisSideOfLine == leftOppositeLine.checkLineSide(diagonal.offsetX))
+      {
+        tmpR = PVector.sub(rightOppositeLine.beginStart, rightOppositeLine.beginEnd);
+        tmpL = PVector.sub(leftOppositeLine.beginStart, leftOppositeLine.beginEnd);
+      } else 
+      {
+        tmpR = PVector.sub(rightOppositeLine.beginStart, rightOppositeLine.beginEnd);
+        tmpL = PVector.sub(leftOppositeLine.beginStart, leftOppositeLine.beginEnd);
+      }
+    } else 
+    { 
+      if (leftOppositeLine.isOnThisSideOfLine == leftOppositeLine.checkLineSide(diagonal.offsetX))
+      {
+        tmpR = PVector.sub(rightOppositeLine.beginStart, rightOppositeLine.beginEnd);
+        tmpL = PVector.sub(leftOppositeLine.beginStart, leftOppositeLine.beginEnd);
+      } else 
+      {
+        tmpR = PVector.sub(rightOppositeLine.beginEnd, rightOppositeLine.beginStart);
+        tmpL = PVector.sub(leftOppositeLine.beginEnd, leftOppositeLine.beginStart);
+      }
+    }
+
+    // needs exaplainin drawing
+
+    tmpL.mult(diagonalScaleFactor);
+    tmpL.add(leftOppositeLine.end);
+
+    tmpR.mult(diagonalScaleFactor);
+    tmpR.add(rightOppositeLine.end);
+
+
+    // set left neigbor point 
+    point[neighbor(selectedPoint)[0]].position.set(tmpL);
+
+    // set right neighbor point
+    point[neighbor(selectedPoint)[1]].position.set(tmpR);
+
+    selectedLine = -1; // disable line focus
+    updateGlobalLines();
+  }
+
+  // Set-up proportional scaling. 
+  // This function is triggered once the mouse is pressed and focused on point while holding SHIFT)
+  void setupScalePointProportionally2()
+  {
+
+    diagonal = new Line (point[neighbor(selectedPoint)[2]].position, point[selectedPoint].position);
     diagonal.resetLockPoints(P);
   }
 
   // This function is called whie dragging the selected point at SCALE_PORPORTIONALLY_POINT state,  
   // it "scales" the whole corner proportionally (aka according to aspect of the polygon)
-  void scalePointProportionally()
+
+  void scalePointProportionally2()
   {
-    fill(255,0,0);
-    ellipse(point[neighbor(selectedPoint)[2]].position.x, point[neighbor(selectedPoint)[2]].position.y, 30,30);
-    ellipse(point[neighbor(selectedPoint)[1]].position.x, point[neighbor(selectedPoint)[1]].position.y, 20,20);
-    ellipse(point[neighbor(selectedPoint)[0]].position.x, point[neighbor(selectedPoint)[0]].position.y, 10,10);
+    fill(255, 0, 0);
+    ellipse(point[neighbor(selectedPoint)[2]].position.x, point[neighbor(selectedPoint)[2]].position.y, 30, 30);
+    ellipse(point[neighbor(selectedPoint)[1]].position.x, point[neighbor(selectedPoint)[1]].position.y, 20, 20);
+    ellipse(point[neighbor(selectedPoint)[0]].position.x, point[neighbor(selectedPoint)[0]].position.y, 10, 10);
     // offsetP = PVector.sub(P, beginP); // calculate the offset made by P
     diagonal.detectX(P); // aka find X
     // diagonal.offsetX = PVector.sub(diagonal.X, diagonal.beginX); // calculate the offset made by X
@@ -828,5 +908,4 @@ public class Polygon
     }
     return c;
   }
-
 }

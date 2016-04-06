@@ -14,7 +14,7 @@ public class Line
   PVector start; // begin point of the line
   PVector end; // end point of the line
   PVector X; // mouse-line projection (perpendicular) point (http://i.imgur.com/IAnNlaH.jpg)
-  PVector offsetX; // how much X offset was made while dragging mouse
+  PVector offsetX, beginOffsetX; // how much X offset was made while dragging mouse
   float dot; // dot producs to be calculated
   int lineColor = 0; 
   int sensitivity = 20; // how close the mouse should be to the line
@@ -51,6 +51,7 @@ public class Line
     beginStart = new PVector();
     beginEnd = new PVector();
     beginX = new PVector();
+    beginOffsetX = new PVector();
 
     beginStart.set(start); 
     beginEnd.set(end);
