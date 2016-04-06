@@ -11,3 +11,5 @@ transform/data/data.json
 transform/data/data.json
 transform/data/data.json
 *.json
+*.jpg
+*.png

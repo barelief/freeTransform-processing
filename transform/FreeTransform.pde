@@ -1,24 +1,24 @@
 /**
-*
-* FreeTransform class contains all information about polygon points and contains
-* all interaction, point and line update routines (formerly known as Quad, later Polygon class)
-* note: most methods are suitable for quad only, so probably creating more 
-* than 4 point polygon will be of no use
-*
-* @author Bartosh Polonski
-* @version 0.prototype
-* @since 2015-09-13
-* 
-*/
+ *
+ * FreeTransform class contains all information about polygon points and contains
+ * all interaction, point and line update routines (formerly known as Quad, later Polygon class)
+ * note: most methods are suitable for quad only, so probably creating more 
+ * than 4 point polygon will be of no use
+ *
+ * @author Bartosh Polonski
+ * @version 0.prototype
+ * @since 2015-09-13
+ * 
+ */
 
 public class Polygon
 {
   int selectedPoint = -1; // currently mouse selected point http://i.imgur.com/Iq2ZZhT.jpg
   int selectedLine = -1; // currently mouse selected line
-  
+
   Point[] point; // array of objects to contain point information
   Line[] line; // array of objects to contain line information
-  
+
   PVector X, Y, Z, Q; // lines, made of line centre points, intersection points, aka lines which create PVector anchor (http://i.imgur.com/Vw7ZXAf.png)
   Line XZ, QY; // intersection Lines http://i.imgur.com/Vw7ZXAf.png
 
@@ -40,12 +40,13 @@ public class Polygon
   PVector beginOffsetP; // initial P position to calculate offestP from it
   PVector offset;  // offset to move point offsetP made by moving user point P (check offsetPooint.pde)
   PVector beginOffset; // check check offsetPooint.pde NEED MORE explanation
-  
+
   // boolean pointLockedToMouse = false; // if one of four points is dragged, then ignore other points by locking the selected one
-  
+
   boolean polygonLockedToMouse = false;
   boolean rotationLockedToMouse = false;
   boolean mouseLockedToLine = false;
+  boolean isOnThisSideOfLine = true; // on which line side is the mouse pointer (needed for mirror )
 
   boolean dragLock = false; // locks all detections when started dragging any object
 
@@ -54,6 +55,8 @@ public class Polygon
   int pointMode = 0; // 0 - POINT, 1 - SCALE_FREE_POINT, 2 - SCALE_PORPORTIONALLY_POINT
 
   int lineMode = 0; //  0 - SCALE_PROPORTIONALLY_LINE, 1 - DRAG_FREE_LINE
+
+  int rotateMode = 0; // 1 - rotate with 45degr step
 
   JSONArray values; // coordinates for polygons points loaded from external file
 
@@ -90,7 +93,7 @@ public class Polygon
     {
       state = state.DRAG_AREA;
     } else 
-      state = state.ROTATE;
+    state = state.ROTATE;
 
     // check if mouse is close to the line
     for (int i=0; i<amount; i++)
@@ -115,17 +118,17 @@ public class Polygon
     {
       if (point[i].isFocusedOnThePoint())
         switch (pointMode)
-        {
-        case 0:
-          state = state.SCALE_FREE_POINT;
-          break;
-        case 1:
-          state = state.DRAG_FREE_POINT;
-          break;
-        case 2:
-          state = state.SCALE_PORPORTIONALLY_POINT;
-          break;
-        }
+      {
+      case 0:
+        state = state.SCALE_FREE_POINT;
+        break;
+      case 1:
+        state = state.DRAG_FREE_POINT;
+        break;
+      case 2:
+        state = state.SCALE_PORPORTIONALLY_POINT;
+        break;
+      }
     }
   }
 
@@ -183,7 +186,7 @@ public class Polygon
       println(i+": "+values.getJSONObject(i).getInt("x")+","+values.getJSONObject(i).getInt("y"));
     }
   }
-  
+
   void setupLineIntersections()
   {
     XZ  = new Line( new PVector(), new PVector() );
@@ -200,7 +203,7 @@ public class Polygon
 
     setCenter();
   }
-  
+
   // reset the position of all points and position them around the screen center
   void resetPosition()
   {
@@ -234,13 +237,13 @@ public class Polygon
       }
     }
   }
-  
-    // update two global points based on currently dragged line (by using global var - selectedLine)
+
+  // update two global points based on currently dragged line (by using global var - selectedLine)
   void updateGlobalPoints(int id)
   {
-      // update global points while dragging the line or it's separate points  
-      point[neighborPointsFromLine(id)[1]].position.set(line[id].start); // right neighbor [1]
-      point[neighborPointsFromLine(id)[0]].position.set(line[id].end); // left neighbor [0]
+    // update global points while dragging the line or it's separate points  
+    point[neighborPointsFromLine(id)[1]].position.set(line[id].start); // right neighbor [1]
+    point[neighborPointsFromLine(id)[0]].position.set(line[id].end); // left neighbor [0]
   }
 
   // find neighbor points based on a source line id, check drawing: http://i.imgur.com/iyZVj78.jpg
@@ -252,7 +255,7 @@ public class Polygon
     if (sourceLineId == amount-1) 
       neighborLeft = 0; // amount - 1 in quad means line[3] aka the last line in quad/polygon
     else 
-      neighborLeft = sourceLineId+1; // otherwise left neigbor is always id+1; i.e. if line[2] then left neigbor is point[3], see drawing: http://i.imgur.com/iyZVj78.jpg
+    neighborLeft = sourceLineId+1; // otherwise left neigbor is always id+1; i.e. if line[2] then left neigbor is point[3], see drawing: http://i.imgur.com/iyZVj78.jpg
 
     int neighborRight = sourceLineId; // right neighbor id is alwas the same as line id, check drawing: http://i.imgur.com/iyZVj78.jpg
     int[] neighbors = {
@@ -289,7 +292,7 @@ public class Polygon
     Line rightOppositeLine = new Line(rightNeighbor, opposite);
 
     Line[] lines = 
-    { 
+      { 
       leftOppositeLine, rightOppositeLine // 0,1
     };
     return lines;
@@ -335,13 +338,13 @@ public class Polygon
 
     // update line positions based on global polygon points
     updateGlobalLines();  
-	
+
     // display help information
     stroke(255);
     if (!helpMode)
       text("press H for help", 40, 40); 
     else 
-      text("mode: "+quad.state+
+    text("mode: "+quad.state+
       "\nMOUSESCROLL or +/- keyboard to zoom in/out\n"+
       "hold CTRL to free transform\n"+
       "hold SHIFT to scale proportionally transform\n"+
@@ -358,7 +361,7 @@ public class Polygon
 
     // find line centres
     X = getLineCenter(point[0], point[1]); // AB
-    Y = getLineCenter(point[1], point[2]); // BC 
+    Y = getLineCenter(point[1], point[2]); // BC
     Z = getLineCenter(point[2], point[3]); // CD
     Q = getLineCenter(point[3], point[0]); // DA
 
@@ -376,7 +379,7 @@ public class Polygon
 
     // display anchor point
     rect(anchor.x, anchor.y, 5, 5);
-    
+
     // check rotation routines (Point -> rotate())
     anchorLine = PVector.sub(P, anchor); 
 
@@ -394,18 +397,18 @@ public class Polygon
       {
       case DRAG_FREE_LINE:
         line(
-        line[neighbor(selectedLine)[2]].start.x, 
-        line[neighbor(selectedLine)[2]].start.y, 
-        line[neighbor(selectedLine)[2]].end.x, 
-        line[neighbor(selectedLine)[2]].end.y
+          line[neighbor(selectedLine)[2]].start.x, 
+          line[neighbor(selectedLine)[2]].start.y, 
+          line[neighbor(selectedLine)[2]].end.x, 
+          line[neighbor(selectedLine)[2]].end.y
           );
         break;
 
       case SCALE_FREE_POINT:
 
         ellipse(
-        point[neighbor(selectedPoint)[2]].x, 
-        point[neighbor(selectedPoint)[2]].y, 30, 30
+          point[neighbor(selectedPoint)[2]].x, 
+          point[neighbor(selectedPoint)[2]].y, 30, 30
           );
         break;
       }
@@ -597,6 +600,8 @@ public class Polygon
     oppositeLine.resetLockPoints(P);
 
     beginP.set(P);
+
+    isOnThisSideOfLine = checkLineSide(oppositeLine.end, oppositeLine.start, P);
   }
 
   // http://i.imgur.com/VnX6EWr.gif TODO: remove bounce effect
@@ -605,11 +610,16 @@ public class Polygon
     oppositeLine.detectX(P);
     float scaleFactor;
     scaleFactor = oppositeLine.X.dist(P) / oppositeLine.beginX.dist(beginP);
+
     PVector XP = new PVector(); // temporary vector XP http://i.imgur.com/bKosZNr.jpg
 
+    PVector xpDirection = new PVector();
     // Scaling right neighbor:
 
-    XP = PVector.sub(rightNeighborLine.beginEnd, rightNeighborLine.beginStart);
+    if (checkLineSide(oppositeLine.end, oppositeLine.start, P) ==isOnThisSideOfLine)
+      XP = PVector.sub(rightNeighborLine.beginEnd, rightNeighborLine.beginStart);
+    else
+      XP = PVector.sub(rightNeighborLine.beginStart, rightNeighborLine.beginEnd);
     XP.mult(scaleFactor);
     XP.add(rightNeighborLine.start);
 
@@ -618,8 +628,10 @@ public class Polygon
     point[neighborPointsFromLine(selectedLine)[1]].position.set(XP); // right neighbor point from selected line
 
     // Scaling left neighbor:
-
-    XP = PVector.sub(leftNeighborLine.beginStart, leftNeighborLine.beginEnd);
+    if (checkLineSide(oppositeLine.end, oppositeLine.start, P) == isOnThisSideOfLine)
+      XP = PVector.sub(leftNeighborLine.beginStart, leftNeighborLine.beginEnd);
+    else
+      XP = PVector.sub(leftNeighborLine.beginEnd, leftNeighborLine.beginStart);
     XP.mult(scaleFactor);
     XP.add(leftNeighborLine.end);
 
@@ -631,14 +643,14 @@ public class Polygon
   void setupPointScaleFree()
   {
     beginOffsetP.set(P);
-    
+
     leftOppositeLine = neighborOppositeLinesFromPoint(selectedPoint)[0];
     rightOppositeLine = neighborOppositeLinesFromPoint(selectedPoint)[1];
     leftOppositeLine.resetLockPoints(P);
     rightOppositeLine.resetLockPoints(P);
     beginP.set(P);
     beginOffsetP.set(P);
-    
+
     beginOffset.set(mouseX, mouseY); // lock the beginning position of the offset vector
     beginOffsetP.set(point[selectedPoint].position); // lock the beginning of the vector to be transformed
   }
@@ -648,11 +660,11 @@ public class Polygon
   void pointScaleFree()
   {
     //offsetP = PVector.sub(P, beginOffsetP); // get the offset (because mouse isnt' exatly at the pressed point, there a little offset)
-    
+
     offset = PVector.sub(P, beginOffset); // calculate the offset made by mouseDrag -- subtract beginOffset from P
     offsetP = PVector.add(beginOffsetP, offset); // reposition point A based the offset made
 
-    
+
     leftOppositeLine.detectX(offsetP); // update X (dot product magic) constantly
     rightOppositeLine.detectX(offsetP); // update X (dot product magic) constantly
 
@@ -780,5 +792,26 @@ public class Polygon
         c = !c;
     }
     return c;
+  }
+
+  // check on which side of line is the mouse (P)ointer
+  boolean checkLineSide(PVector A, PVector B, PVector P)
+  {
+    boolean oneSide = true;
+    PVector v1 = new PVector(B.x-A.x, B.y-A.y); 
+    PVector v2 = new PVector(B.x-P.x, B.y-P.y);
+
+    float xp = v1.x*v2.y - v1.y*v2.x;
+
+    if (xp > 0)
+    {
+      text( "on one side", 20, 20);
+      oneSide = true;
+    } else if (xp < 0)
+    {
+      text( "on the other", 20, 20);
+      oneSide = false;
+    }
+    return oneSide;
   }
 }
