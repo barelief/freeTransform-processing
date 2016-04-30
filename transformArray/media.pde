@@ -1,10 +1,10 @@
 /**
  *
- * External images code
+ * Solves rendering textures and images (PGraphics, PImage) - buggy, WIP
  *
  * @author Bartosh Polonski
  * @version 0.prototype
- * @since 2015-09-13
+ * @since 2016-04-30
  * 
  */
 

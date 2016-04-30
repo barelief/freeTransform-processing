@@ -3,7 +3,7 @@
  * Mouse and keyboard interaction routines
  *
  * @author Bartosh Polonski
- * @version 0.prototype
+ * @version 0.3
  * @since 2016-04-28
  * 
  */
@@ -41,8 +41,8 @@ void mousePressed()
   if (mouseButton == LEFT)
   {
     // isSelected
-    int selected = transform.focusedQuadId();
-    Polygon quad = transform.quads.get(selected); 
+    int focused = transform.focusedQuadId();
+    Polygon quad = transform.quads.get(focused); 
     println ("---> state: "+quad.state);
     
     switch (quad.state)
@@ -60,8 +60,12 @@ void mousePressed()
       break;
 
     case ROTATE:
-      quad.setupPolygonRotate();
-      quad.dragLock = true;
+      //quad.setupPolygonRotate();
+      //quad.dragLock = true;
+      int selected = transform.selectedQuadId();
+      Polygon rotatingQuad = transform.quads.get(selected); 
+      rotatingQuad.setupPolygonRotate();
+      rotatingQuad.dragLock = true;
       break;
 
     case DRAG_AREA:
