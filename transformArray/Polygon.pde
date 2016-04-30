@@ -6,8 +6,8 @@
  * than 4 point polygon will be of no use, as some interactions will go wrong
  *
  * @author Bartosh Polonski
- * @version 0.prototype
- * @since 2015-09-13
+ * @version 0.3
+ * @since 2016-04-30
  * 
  */
 
@@ -86,8 +86,18 @@ public class Polygon
     setupPoints(); //
     setupLines(); //
 
-    loadValues(); //
+    createPoints(); // moved to parent class FreeTransform
     updateGlobalLines(); // aka init line objects
+  }
+  
+  // create point objects
+  void createPoints()
+  {
+      for (int j=0; j<amount; j++)
+      {
+        point[j] = new Point (0, 0, j, this);
+        //println(i+": "+values.getJSONObject(i).getInt("x")+","+values.getJSONObject(i).getInt("y"));
+      }
   }
 
   // this function sets the interaction state based on mouse position
@@ -166,40 +176,6 @@ public class Polygon
     point = new Point[amount];
   }
 
-  // load polygon points previously saved to disk
-  void loadValues()
-  {
-    values = new JSONArray();
-
-    // try loading coordinates of polygon points from an external file
-    try {
-      values = loadJSONArray("data.json");
-    } 
-    catch (Exception e) {
-      e.printStackTrace();
-      println("data file not found.. but dont worry, we'll create that later..");
-
-      // if external file does not exist, make a default poin arrangement as in resetPosition();
-      resetPosition();
-    };
-
-    // assign loaded values to polygon variables
-    setupValues(values);
-  }
-
-  // get loaded values from disk 
-  // and assign them to the polygon class points
-  void setupValues(JSONArray values)
-  {
-    println("--> setting up values..");
-    // load points form external file
-
-    for (int i=0; i<amount; i++)
-    {
-      point[i] = new Point (values.getJSONObject(i).getInt("x"), values.getJSONObject(i).getInt("y"), i, this);
-      println(i+": "+values.getJSONObject(i).getInt("x")+","+values.getJSONObject(i).getInt("y"));
-    }
-  }
 
   void setupLineIntersections()
   {
@@ -216,28 +192,6 @@ public class Polygon
       anchor = XZ.intersects_at(QY);
 
     setCenter();
-  }
-
-  // reset the position of all points and position them around the screen center
-  void resetPosition()
-  {
-    println ("resetting position...");
-
-    // reset all points so they are drawn in the center with equal distance between each other
-    for (int i=0; i<amount; i++)
-    {
-      JSONObject pointsToSave = new JSONObject();
-      int radius=width/4;
-      float angle = map(i, 0, amount, PI, -PI); // position points evenly from -PI to +PI
-      PVector shift = new PVector(sin(angle)*radius+width/2, cos(angle)*radius+height/2); //  on the circumference of a circle of "radius" in the center (w/2, h/2)
-      point[i] = new Point(shift.x, shift.y, i, this);
-
-      pointsToSave.setInt("x", (int)shift.x);
-      pointsToSave.setInt("y", (int)shift.y);
-      values.setJSONObject(i, pointsToSave);
-    }
-    selectedLine = -1;
-    updateGlobalLines();
   }
 
   // update line objects positions according to point positions
@@ -331,7 +285,7 @@ public class Polygon
     }
 
     // display rotation ellipse in anchor position
-    if (state == State.ROTATE)
+    if (state == State.ROTATE && isSelected)
     {
       noFill();
       if (!dragLock)
@@ -896,7 +850,6 @@ public class Polygon
     for (int i=0; i<amount; i++)
       point[i].rotate();
   }
-
 
   // this function checks if input is inside polygon
   // based on http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
