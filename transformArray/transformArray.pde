@@ -15,7 +15,8 @@ void draw()
   // image(bg, 0, 0); //
   //drawTexture(); // use with OPENGL mode
   transform.draw();
-  
+  transform.render(0, img);
+  transform.render(3, img);
   P.set(mouseX, mouseY);
   displayCursors();
 
@@ -32,12 +33,14 @@ void setup()
   bg = loadImage("bg.jpg");
   loadCursors(); // load cursor png files
   frameRate(59); // set the frameRate of the app
-  //size(600, 600); // window size 
-  //size(640,353, P3D); // uncomment if using with drawTexture()
+  // size(600, 600); // window size 
+  // size(640,353, P3D); // uncomment if using with drawTexture()
+  
   size(600, 600, P3D);
   noSmooth(); // 
   
   // init user input vector and its flavours
+
   P = new PVector(); // 
   beginP = new PVector();
   offsetP = new PVector();

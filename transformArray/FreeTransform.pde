@@ -213,4 +213,40 @@ class FreeTransform
       }
     }
   }
+
+
+  // returns particular quad, based on its id
+  Polygon getQuad(int id)
+  {
+    Polygon quad = quads.get(id); // load particular quad
+    return quad;
+  }
+
+  // translate image texture with quad points
+  void render(int id, PImage img)
+  {
+    Polygon quad = quads.get(id); 
+
+    beginShape();
+    texture(img);
+    vertex(quad.point[0].x, quad.point[0].y, 0, 0);
+    vertex(quad.point[1].x, quad.point[1].y, img.width, 0);
+    vertex(quad.point[2].x, quad.point[2].y, img.width, img.height);
+    vertex(quad.point[3].x, quad.point[3].y, 0, img.height);
+    endShape();
+  }
+  
+  // translate Pgraphics object texture with quad points
+  void render(int id, PGraphics img)
+  {
+    Polygon quad = quads.get(id); 
+
+    beginShape();
+    texture(img);
+    vertex(quad.point[0].x, quad.point[0].y, 0, 0);
+    vertex(quad.point[1].x, quad.point[1].y, img.width, 0);
+    vertex(quad.point[2].x, quad.point[2].y, img.width, img.height);
+    vertex(quad.point[3].x, quad.point[3].y, 0, img.height);
+    endShape();
+  }
 }
