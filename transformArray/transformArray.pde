@@ -11,12 +11,18 @@
 void draw()
 {
   background(100); //
-  // imageMode(CORNER); //
-  // image(bg, 0, 0); //
+  
+  updateOffscreen();
+  imageMode(CORNER); //
+   image(bg, 0, 0); //
   //drawTexture(); // use with OPENGL mode
-  transform.draw();
+  
   transform.render(0, img);
   transform.render(3, img);
+  transform.render(4, offscreen);
+    transform.render(1, earth);
+  
+  transform.draw();
   P.set(mouseX, mouseY);
   displayCursors();
 
@@ -31,6 +37,10 @@ void setup()
 {
   img = loadImage("cat.jpg"); // load texture to be transformed
   bg = loadImage("bg.jpg");
+  earth = loadImage("http://nuclearpixel.com/content/icons/2010-02-09_stellar_icons_from_space_from_2005/earth_512.png");
+
+  offscreen = createGraphics(200, 200);
+
   loadCursors(); // load cursor png files
   frameRate(59); // set the frameRate of the app
   // size(600, 600); // window size 

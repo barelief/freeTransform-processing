@@ -20,7 +20,6 @@ class FreeTransform
 
   FreeTransform()
   {
-    quadAmount = 7;
     quads = new ArrayList<Polygon>();
     loadValues(); // load cooradinates for all quads points from external JSON file
   }
@@ -146,6 +145,7 @@ class FreeTransform
     };
 
     // assign loaded values to polygon variables
+    quadAmount = coordinateValues.size();
     setupValues(coordinateValues);
   }
 
