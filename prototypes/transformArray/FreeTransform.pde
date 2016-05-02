@@ -93,10 +93,10 @@ class FreeTransform
         "\nMOUSESCROLL or +/- keyboard to zoom in/out\n"+
         "hold CTRL to free transform\n"+
         "hold SHIFT to scale proportionally transform\n"+
-        "↑ ↓ ← → to update selected mode with keyboard\n"+
+        "↑ ↓ ← → to update w/ keyboard (disabled)\n"+
         "press H to hide this help info"+
         "\npress D for debug\n"+
-        "press R to reset\n"+
+        "press R to reset (disabled)\n"+
         "frame rate: "+(int)frameRate
         , 20, 20);
     }
