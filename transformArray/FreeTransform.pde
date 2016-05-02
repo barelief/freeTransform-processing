@@ -17,6 +17,7 @@ class FreeTransform
   int selectedQuad;
   boolean helpMode = false; // 
   JSONArray coordinateValues;
+  boolean isEnabled = false;
 
   FreeTransform()
   {
@@ -27,6 +28,7 @@ class FreeTransform
   void draw()
   {
     update(); //
+    render();
   }
 
   void update()
@@ -34,8 +36,15 @@ class FreeTransform
     for (int i = 0; i < quadAmount; i++) 
     {
       Polygon quad = quads.get(i); //
-      quad.draw(); //
+      quad.update(); //
+      if (isEnabled)
+        quad.render(); //
     }
+  }
+
+  void render()
+  {
+    showDebugInfo();
   }
 
   // return the currently mouse selected quad
@@ -74,19 +83,23 @@ class FreeTransform
   {
     Polygon quad = quads.get(selectedQuadId()); //
     stroke(255);
-    if (!helpMode)
-      text("press H for help", 40, 40); 
-    else 
-    text("mode: "+quad.state+
-      "\nMOUSESCROLL or +/- keyboard to zoom in/out\n"+
-      "hold CTRL to free transform\n"+
-      "hold SHIFT to scale proportionally transform\n"+
-      "↑ ↓ ← → to update selected mode with keyboard\n"+
-      "press H to hide this help info"+
-      "\npress D for debug\n"+
-      "press R to reset\n"+
-      "frame rate: "+(int)frameRate
-      , 40, 40);
+
+    if (isEnabled)
+    {
+      if (!helpMode)
+        text("Transforming.\n[h] for help\n[t] to disable transform", 20, 20);
+      else 
+      text("mode: "+quad.state+
+        "\nMOUSESCROLL or +/- keyboard to zoom in/out\n"+
+        "hold CTRL to free transform\n"+
+        "hold SHIFT to scale proportionally transform\n"+
+        "↑ ↓ ← → to update selected mode with keyboard\n"+
+        "press H to hide this help info"+
+        "\npress D for debug\n"+
+        "press R to reset\n"+
+        "frame rate: "+(int)frameRate
+        , 20, 20);
+    }
   }
 
   // saves current points coordinates to disk
@@ -123,7 +136,7 @@ class FreeTransform
       }
     }
 
-    println("---> Values loaded from disk...");
+    println("[notice ] Values loaded from disk...");
   }
 
 
@@ -138,7 +151,7 @@ class FreeTransform
     } 
     catch (Exception e) {
       e.printStackTrace();
-      println("data file not found.. but dont worry, we'll create that later..");
+      println("[warning ] data file not found.. but dont worry, we'll create that later..");
 
       // if external file does not exist, make a default poin arrangement as in resetPosition();
       // resetPosition();
@@ -197,7 +210,7 @@ class FreeTransform
   // and assign them to the polygon class points
   void setupValues(JSONArray values)
   {
-    println("--> setting up values..");
+    println("[notice ] setting up values..");
     // load points form external file
 
     for (int i = 0; i < values.size(); i++) 
@@ -226,7 +239,7 @@ class FreeTransform
   void render(int id, PImage img)
   {
     Polygon quad = quads.get(id); 
-
+    noStroke();
     beginShape();
     texture(img);
     vertex(quad.point[0].x, quad.point[0].y, 0, 0);
@@ -235,12 +248,12 @@ class FreeTransform
     vertex(quad.point[3].x, quad.point[3].y, 0, img.height);
     endShape();
   }
-  
+
   // translate Pgraphics object texture with quad points
   void render(int id, PGraphics img)
   {
     Polygon quad = quads.get(id); 
-
+    noStroke();
     beginShape();
     texture(img);
     vertex(quad.point[0].x, quad.point[0].y, 0, 0);

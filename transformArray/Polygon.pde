@@ -81,7 +81,7 @@ public class Polygon
 
     center = new PVector();
 
-    println("state: "+state);
+    // println("state: "+state);
 
     setupPoints(); //
     setupLines(); //
@@ -89,15 +89,15 @@ public class Polygon
     createPoints(); // moved to parent class FreeTransform
     updateGlobalLines(); // aka init line objects
   }
-  
+
   // create point objects
   void createPoints()
   {
-      for (int j=0; j<amount; j++)
-      {
-        point[j] = new Point (0, 0, j, this);
-        //println(i+": "+values.getJSONObject(i).getInt("x")+","+values.getJSONObject(i).getInt("y"));
-      }
+    for (int j=0; j<amount; j++)
+    {
+      point[j] = new Point (0, 0, j, this);
+      //println(i+": "+values.getJSONObject(i).getInt("x")+","+values.getJSONObject(i).getInt("y"));
+    }
   }
 
   // this function sets the interaction state based on mouse position
@@ -269,14 +269,62 @@ public class Polygon
   // rendering, detecting, update functions
   void draw()
   {
+    //display debug information
+    // if (debugMode)
+    //   displayDebugInformation(); 
+
+    update();
+    render(); // display freetransform points, lines and colorings
+
+    // display opposite objects
+    // displayOppositeObject();
+  }
+
+  void updatePoints()
+  {
+    for (int i=0; i<amount; i++)
+    {
+      point[i].update();
+    }
+  }
+
+  void update()
+  {
+    updatePoints();
+
+    // find line centres
+    X = getLineCenter(point[0], point[1]); // AB
+    Y = getLineCenter(point[1], point[2]); // BC
+    Z = getLineCenter(point[2], point[3]); // CD
+    Q = getLineCenter(point[3], point[0]); // DA
+
+    // find anchor point (aka intersection of lines from the centres of main lines)
+    updateLineIntersections();
+
+
+
+    // check rotation routines (Point -> rotate())
+    anchorLine = PVector.sub(P, anchor);
+
+    // update line positions based on global polygon points
+    updateGlobalLines();
+  }
+
+  void render()
+  {
     // detect which state is being selected with mouse
     if (!dragLock)
-      fucusLocks(); 
+      fucusLocks(); // not sure if it's ok to put it inside render() method
+
+    // display help information
+    String selected = isSelected?" [selected]":"";
+    text(id+selected, anchor.x+10, anchor.y);
+
 
     // display points and lines with their colourings
     for (int i=0; i<amount; i++)
     {
-      point[i].draw();
+      point[i].render();
 
       if (state==State.DRAG_AREA)
         stroke(255, 255, 0); 
@@ -304,23 +352,12 @@ public class Polygon
       rect(anchor.x, anchor.y, 15, 15);
     }
 
-    // update line positions based on global polygon points
-    updateGlobalLines();  
+    // display anchor point
+    rect(anchor.x, anchor.y, 5, 5);
 
-    // display help information
-    
-    String selected = isSelected?" [selected]":"";
-    text(id+selected, anchor.x+10, anchor.y);
-    
-    //display debug information
-    if (debugMode)
-      displayDebugInformation(); 
 
-    // find line centres
-    X = getLineCenter(point[0], point[1]); // AB
-    Y = getLineCenter(point[1], point[2]); // BC
-    Z = getLineCenter(point[2], point[3]); // CD
-    Q = getLineCenter(point[3], point[0]); // DA
+
+
 
     // display line centres
     noFill();
@@ -330,18 +367,6 @@ public class Polygon
     rect(Y.x, Y.y, 5, 5);
     rect(Z.x, Z.y, 5, 5);
     rect(Q.x, Q.y, 5, 5);
-
-    // find anchor point (aka intersection of lines from the centres of main lines)
-    updateLineIntersections();
-
-    // display anchor point
-    rect(anchor.x, anchor.y, 5, 5);
-
-    // check rotation routines (Point -> rotate())
-    anchorLine = PVector.sub(P, anchor); 
-
-    // display opposite objects
-    // displayOppositeObject();
   }
 
   void displayOppositeObject()
@@ -455,7 +480,7 @@ public class Polygon
   void release()
   {
 
-    println("---> releasing... ");
+    println("[notice ] releasing... ");
     for (int i=0; i<amount; i++)
     {
       point[i].sticked = false;
@@ -468,7 +493,9 @@ public class Polygon
     // pointLockedToMouse = false;
     rotationLockedToMouse = false;
     selectedLine=-1;
+
     
+
     //isSelected = 
     // pointMode = 0; // switch to deafult point mode
 

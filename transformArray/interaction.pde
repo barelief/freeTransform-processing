@@ -13,11 +13,17 @@ void mouseReleased()
 {
   if (mouseButton == LEFT)
   {
-    int selected = transform.selectedQuadId();
-    Polygon quad = transform.quads.get(selected); 
-    quad.release(); // release all locks
-    transform.savePoints(); // save current polygon points to external file
+    releaseQuad();
   }
+}
+
+void releaseQuad()
+{
+  int selected = transform.selectedQuadId();
+  Polygon quad = transform.quads.get(selected); 
+  quad.release(); // release all locks
+  //
+  transform.savePoints(); // save current polygon points to external file
 }
 
 // what happens when you release keyboard button
@@ -25,7 +31,7 @@ void keyReleased()
 {
   int selected = transform.selectedQuadId();
   Polygon quad = transform.quads.get(selected); 
-  
+
   if (!quad.dragLock)
   {
     quad.pointMode = 0; // if no key is selected then return to deafault mode (SCALE_FREE_POINT)
@@ -43,8 +49,8 @@ void mousePressed()
     // isSelected
     int focused = transform.focusedQuadId();
     Polygon quad = transform.quads.get(focused); 
-    println ("---> state: "+quad.state);
-    
+    println ("[notice ] state: "+quad.state);
+
     switch (quad.state)
     {
 
@@ -96,7 +102,7 @@ void mouseDragged()
 {
   int selected = transform.selectedQuadId();
   Polygon quad = transform.quads.get(selected); 
-  
+
   if (mouseButton == LEFT)
   {
     switch (quad.state)
@@ -154,6 +160,15 @@ void keyPressed()
     transform.helpMode=!transform.helpMode;
     break;
 
+
+  case 't':
+    transform.isEnabled = !transform.isEnabled;
+    if (!transform.isEnabled)
+    {
+      quad.state = State.NONE;
+    }
+    break;
+
   case CODED:
     switch (keyCode)
     {
@@ -192,7 +207,7 @@ void mouseWheel(MouseEvent event) {
   // If SHIFT is pressed
   int selected = transform.selectedQuadId();
   Polygon quad = transform.quads.get(selected); 
-  
+
   if (quad.pointMode == 2) 
     scalingSensitivity = .01;
   else scalingSensitivity = .05;

@@ -16,16 +16,18 @@ void draw()
   imageMode(CORNER); //
    image(bg, 0, 0); //
   //drawTexture(); // use with OPENGL mode
-  
+     
   transform.render(0, img);
-  transform.render(3, img);
-  transform.render(4, offscreen);
-    transform.render(1, earth);
+  transform.render(2, img2);
+  transform.render(3, offscreen);
+  transform.render(1, earth);
   
   transform.draw();
   P.set(mouseX, mouseY);
   displayCursors();
-
+  
+  if (!transform.isEnabled)
+  text("press [t] to enable transform", 20,20);
 }
 
 PVector P; // user input vector
@@ -35,9 +37,10 @@ FreeTransform transform; // array of quads to transform (main object)
 
 void setup()
 {
-  img = loadImage("cat.jpg"); // load texture to be transformed
+  img = loadImage("cat.png"); // load texture to be transformed
+ img2 = loadImage("stones.png"); // load texture to be transformed
   bg = loadImage("bg.jpg");
-  earth = loadImage("http://nuclearpixel.com/content/icons/2010-02-09_stellar_icons_from_space_from_2005/earth_512.png");
+  earth = loadImage("moon.png");
 
   offscreen = createGraphics(200, 200);
 
@@ -46,7 +49,7 @@ void setup()
   // size(600, 600); // window size 
   // size(640,353, P3D); // uncomment if using with drawTexture()
   
-  size(600, 600, P3D);
+  size(777, 510, P3D);
   noSmooth(); // 
   
   // init user input vector and its flavours
