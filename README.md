@@ -2,7 +2,9 @@
 
 ## About
 
-Scale, rotate and variously transform textures (PImage, PGraphics) with mouse. Transformations are automatically saved
+Scale, rotate and variously transform textures (PImage, PGraphics) with mouse. 
+
+Transformations are automatically saved
 
 ![Ft](http://i.imgur.com/FxJHjKs.png)
 
@@ -13,7 +15,7 @@ Download library here: [Releases](https://github.com/barelief/freeTransform-proc
 ## How to use
 
 Copy it to your libraries forlder 
-~~or use biuld-in Contribution Manager [screenshot link]~~
+~~or use built-in Contribution Manager [screenshot link]~~
 
 ## Call to action
 
