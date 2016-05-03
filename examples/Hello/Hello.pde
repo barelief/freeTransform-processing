@@ -20,6 +20,9 @@ void draw()
   hello.render(2, img2);
   hello.render(3, img3);
   hello.draw();
+  
+  if (!hello.isEnabled)
+    text("Press t to transform", 20, 20);
 }
 
 void keyPressed()

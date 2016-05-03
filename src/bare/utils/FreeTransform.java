@@ -38,7 +38,7 @@ public class FreeTransform {
 	int selectedQuad;
 	boolean helpMode = false; //
 	JSONArray coordinateValues;
-	boolean isEnabled = false;
+	public boolean isEnabled = false;
 	
 	Events events;
 	
