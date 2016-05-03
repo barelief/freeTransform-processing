@@ -2,7 +2,7 @@
 ## Free Transform for Processing
 (wip, with bugs, don't use it)
 
-![Ft](http://i.imgur.com/06XhZyt.png)
+![Ft](http://i.imgur.com/FxJHjKs.png)
 
 ## Roadmap
 * ~~0.1 transform one object~~

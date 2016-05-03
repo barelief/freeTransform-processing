@@ -860,7 +860,7 @@ public class Polygon
     }
   }
 
-  // Set-up rotation of the polygon
+  // Set-up rotation of the polygonAr
   void setupPolygonRotate()
   {
     rotationLockedToMouse = true;

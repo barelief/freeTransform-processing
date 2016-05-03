@@ -19,6 +19,8 @@ class FreeTransform
   JSONArray coordinateValues;
   boolean isEnabled = false;
 
+
+
   FreeTransform()
   {
     quads = new ArrayList<Polygon>();
@@ -33,6 +35,7 @@ class FreeTransform
 
   void update()
   {
+    P.set(mouseX, mouseY);
     for (int i = 0; i < quadAmount; i++) 
     {
       Polygon quad = quads.get(i); //

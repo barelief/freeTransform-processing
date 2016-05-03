@@ -16,7 +16,7 @@ void mouseReleased()
     releaseQuad();
   }
 }
-
+t
 void releaseQuad()
 {
   int selected = transform.selectedQuadId();
@@ -142,62 +142,7 @@ void mouseDragged()
 // key bindings
 void keyPressed()
 {
-  int selected = transform.selectedQuadId();
-  Polygon quad = transform.quads.get(selected); 
-  // quad.selectedLine=key-49;
-  switch(key)
-  {
-  case 'r':
-    // quad.resetPosition(); // reset 
-    // quad.setupValues(quad.values); // load resetted values
-    break;
 
-  case 'd':
-    quad.debugMode=!quad.debugMode;
-    break;
-
-  case 'h':
-    transform.helpMode=!transform.helpMode;
-    break;
-
-
-  case 't':
-    transform.isEnabled = !transform.isEnabled;
-    if (!transform.isEnabled)
-    {
-      quad.state = State.NONE;
-    }
-    break;
-
-  case CODED:
-    switch (keyCode)
-    {
-    case CONTROL:
-      quad.pointMode = 1; // state = DRAG_FREE_POINT
-      quad.lineMode = 1; // state = DRAG_FREE_LINE
-
-      break;
-
-    case SHIFT: 
-      quad.pointMode = 2; // state = SCALE_PORPORTIONALLY_POINT
-      quad.rotateMode = 1; // rotate with a 45 degree step
-      break;
-    }
-    break;
-  case '+': 
-    quad.scaleArea(1+scalingSensitivity);
-    break;
-  case '-': 
-    quad.scaleArea(1-scalingSensitivity);
-    break;
-
-  case 1:
-    quad.state = State.SCALE_PROPORTIONALLY_LINE;
-    break;
-  case 2:
-    quad.state = State.DRAG_FREE_LINE;
-    break;
-  }
 }
 
 // mouse scroll functionality (zoom in / out)
