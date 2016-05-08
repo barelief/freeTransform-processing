@@ -16,7 +16,7 @@ package bare.utils;
 
 import processing.data.JSONArray;
 import processing.data.JSONObject;
-// import processing.event.MouseEvent;
+import processing.event.KeyEvent;
 import java.util.ArrayList;
 import processing.core.*;
 
@@ -39,9 +39,9 @@ public class FreeTransform {
 	boolean helpMode = false; //
 	JSONArray coordinateValues;
 	public boolean isEnabled = false;
-	
+
 	Events events;
-	
+
 	int defaultSize = 50;
 
 	/**
@@ -49,29 +49,32 @@ public class FreeTransform {
 	 * initialize and start the Library.
 	 * 
 	 * @example Hello
-	 * @param theParent parent Processing object
+	 * @param theParent
+	 *            parent Processing object
 	 */
 
 	public FreeTransform(PApplet theParent) {
 		this.myParent = theParent;
 		welcome();
 		quads = new ArrayList<Polygon>();
-		
+
 		// load cooradinates for all quads points from external JSON file
-		loadValues(); 
-		
+		loadValues();
+
 		// enable mouse and key events (unregistered by default)
-		events = new Events(this); 
+		events = new Events(this);
+		this.myParent.registerMethod("keyEvent", this);
+		System.out.println("[notice ] Press t to enable/disable Free Transform.. ");
 	}
-	
-	public void toggleTransform()
-	{
-		isEnabled=!isEnabled;
-		
-		// enable or disable events
+
+	public void toggleTransform() {
+		isEnabled = !isEnabled;
+
+		// enable or disable transformation mouse / key events 
 		if (isEnabled)
 			events.register();
-		else events.unregister();
+		else
+			events.unregister();
 	}
 
 	public void draw() {
@@ -129,9 +132,9 @@ public class FreeTransform {
 			else
 				myParent.text("mode: " + quad.state + "\nMOUSESCROLL or +/- keyboard to zoom in/out\n"
 						+ "hold CTRL to free transform\n" + "hold SHIFT to scale proportionally\n"
-						+ /*"↑ ↓ ← → to update w/ keyboard (disabled)\n" +*/ "press H to hide this help info"
-						+ "\npress D for debug\n" + "press r to reset selected quad \npress R to reset all quads" + "\nframe rate: "
-						+ (int) myParent.frameRate, 20, 20);
+						+ /* "↑ ↓ ← → to update w/ keyboard (disabled)\n" + */ "press H to hide this help info"
+						+ "\npress D for debug\n" + "press r to reset selected quad \npress R to reset all quads"
+						+ "\nframe rate: " + (int) myParent.frameRate, 20, 20);
 		}
 	}
 
@@ -140,10 +143,10 @@ public class FreeTransform {
 		for (int i = 0; i < quadAmount; i++) {
 			JSONObject pointToSave = new JSONObject();
 			// set the id of the quad
-			pointToSave.setInt("id", i); 
-			
+			pointToSave.setInt("id", i);
+
 			// load particular quad
-			Polygon quad = quads.get(i); 
+			Polygon quad = quads.get(i);
 
 			for (int j = 0; j < quad.amount; j++) {
 				pointToSave.setInt("x" + j, (int) quad.point[j].position.x);
@@ -159,7 +162,7 @@ public class FreeTransform {
 	void loadPoints() {
 		for (int i = 0; i < quadAmount; i++) {
 			// load particular quad
-			Polygon quad = quads.get(i); 
+			Polygon quad = quads.get(i);
 
 			for (int j = 0; j < quad.amount; j++) {
 			}
@@ -202,10 +205,10 @@ public class FreeTransform {
 	void resetAllQuads() {
 		PVector newPosition = new PVector();
 		int step = myParent.width / quadAmount;
-		
+
 		for (int i = 0; i < quadAmount; i++) {
 			Polygon quad = quads.get(i); //
-			newPosition.set(i*step + defaultSize, defaultSize);
+			newPosition.set(i * step + defaultSize, defaultSize);
 			quad.repositionQuad(newPosition);
 			resetQuad(i);
 		}
@@ -216,13 +219,12 @@ public class FreeTransform {
 		Polygon quad = quads.get(quadId); //
 		quad.reset(defaultSize);
 	}
-	
+
 	// reset currently selected quad to its default position
 	void resetQuad() {
 		Polygon quad = quads.get(selectedQuadId()); //
 		quad.reset(defaultSize);
 	}
-
 
 	/*
 	 * // reset the position of all points and position them around the screen
@@ -294,12 +296,45 @@ public class FreeTransform {
 		myParent.endShape();
 	}
 
-	private void welcome() {
-		System.out.println("##library.name## ##library.prettyVersion## by ##author##");
+	// Keyboard inputs
+	public void keyEvent(KeyEvent e) {
+
+		switch (e.getAction()) {
+		// if key was released
+		case KeyEvent.RELEASE:
+			// System.out.println("KEY Released");
+
+			break;
+
+		// if key was pressed
+		case KeyEvent.PRESS:
+
+			switch (e.getKey()) {
+			case 't':
+				toggleTransform(); // reset
+				// quad.setupValues(quad.values); // load resetted values
+				break;
+
+			case PConstants.CODED:
+				switch (e.getKeyCode()) {
+				case PConstants.CONTROL:
+					// control
+					break;
+
+				case PConstants.SHIFT:
+					// shift
+					break;
+				}
+				break;
+
+			}
+
+			break;
+		}
 	}
 
-	public String sayHello() {
-		return "hello library.";
+	private void welcome() {
+		System.out.println("##library.name## ##library.prettyVersion## by ##author##");
 	}
 
 	/**
@@ -311,22 +346,4 @@ public class FreeTransform {
 		return VERSION;
 	}
 
-	/**
-	 * 
-	 * @param theA
-	 *            the width of test
-	 * @param theB
-	 *            the height of test
-	 */
-	public void setVariable(int theA, int theB) {
-		myVariable = theA + theB;
-	}
-
-	/**
-	 * 
-	 * @return int
-	 */
-	public int getVariable() {
-		return myVariable;
-	}
 }

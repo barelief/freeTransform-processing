@@ -2,7 +2,7 @@
 
 ## About
 
-Scale, rotate and variously transform textures (PImage, PGraphics) with mouse. 
+Scale, rotate and variously transform textures (PImage, PGraphics) 
 
 Transformations are automatically saved
 
@@ -23,9 +23,11 @@ Feel free to optimize or add new features.
 
 This lib needs your comments, code optimization, other improvemens. 
 
+Check [Prototypes](https://github.com/barelief/freeTransform-processing/tree/master/prototypes) to see how FreeTransform is constructed from separate sketches 
+
 Please use it and give feedback in [Issues](https://github.com/barelief/freeTransform-processing/issues) section
 
-See: [Roadmap](https://github.com/barelief/freeTransform-processing/tree/master#roadmap) for details
+See [Roadmap](https://github.com/barelief/freeTransform-processing/tree/master#roadmap) for details
 
 
 Thank you!

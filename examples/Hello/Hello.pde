@@ -24,9 +24,3 @@ void draw()
   if (!hello.isEnabled)
     text("Press t to transform", 20, 20);
 }
-
-void keyPressed()
-{
-  if (key == 't')
-    hello.toggleTransform();
-}

@@ -1,3 +1,13 @@
+/**
+ *
+ * Events class contains mouse and keyboard routines. They are enabled and disabled in FreeTransform.toggleTransform()
+ * 
+ * @author Bartosh Polonski
+ * @version 0.3.0
+ * @since 2016-04-30
+ * 
+ */
+
 package bare.utils;
 
 import processing.core.*;
@@ -161,11 +171,6 @@ public class Events {
 
 	public void keyEvent(KeyEvent e) {
 		// System.out.println("keyPressed");
-		switch (e.getAction()) {
-		case ' ':
-			System.out.println("space pressed");
-			break;
-		}
 
 		switch (e.getAction()) {
 		// if key was released
