@@ -44,6 +44,9 @@ public class FreeTransform {
 
 	int defaultSize = 50;
 
+	// load image cursors (they should be as png files in data/ folder
+	Cursors cursors;
+
 	/**
 	 * a Constructor, usually called in the setup() method in your sketch to
 	 * initialize and start the Library.
@@ -65,16 +68,22 @@ public class FreeTransform {
 		events = new Events(this);
 		this.myParent.registerMethod("keyEvent", this);
 		System.out.println("[notice ] Press t to enable/disable Free Transform.. ");
+
+		// create Cursors object
+		cursors = new Cursors();
+		cursors.loadCursors(theParent, this);
 	}
 
 	public void toggleTransform() {
 		isEnabled = !isEnabled;
 
-		// enable or disable transformation mouse / key events 
+		// enable or disable transformation mouse / key events
 		if (isEnabled)
 			events.register();
-		else
+		else {
 			events.unregister();
+			myParent.cursor();
+		}
 	}
 
 	public void draw() {
@@ -85,9 +94,15 @@ public class FreeTransform {
 	void update() {
 		for (int i = 0; i < quadAmount; i++) {
 			Polygon quad = quads.get(i); //
-			quad.update(); //
+			// update quad points neede to transform textures
+			quad.update(); 
+			
+			// display quad ,cursors
 			if (isEnabled)
+			{
 				quad.render(); //
+				cursors.render();
+			} 
 		}
 	}
 
