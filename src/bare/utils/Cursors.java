@@ -1,6 +1,7 @@
 package bare.utils;
 
 import processing.core.*;
+import java.io.File;
 
 public class Cursors {
 	PImage[] cursor = new PImage[4]; // create array of images used as cursors
@@ -11,8 +12,21 @@ public class Cursors {
 	void loadCursors(PApplet theParent, FreeTransform parentTransofrm) {
 		this.myParent = theParent;
 		this.transform = parentTransofrm;
+		
+		File dir = new File(myParent.dataPath("cursors")); 
+		
+		if (!dir.exists())
+		{
+		 	System.out.println("[warning ] 'cursors/' folder not found. For better experience copy 'cursors/' folder into sketch data");
+		} 
+		
 		for (int i = 0; i < 4; i++)
-			cursor[i] = myParent.loadImage("cursors/" + i + ".png");
+		{
+			if(!dir.exists())
+				cursor[i] = myParent.createImage(5, 5, PConstants.RGB);
+			else
+				cursor[i] = myParent.loadImage("cursors/" + i + ".png");
+		}
 	}
 
 	// display cursors based on current interactive state
@@ -22,7 +36,7 @@ public class Cursors {
 
 		PVector diff = new PVector();
 		PVector P = new PVector(myParent.mouseX, myParent.mouseY);
-		myParent.ellipse(P.x, P.y, 3, 3);
+		//myParent.ellipse(P.x, P.y, 3, 3);
 		diff = PVector.sub(P, quad.anchor);
 		myParent.imageMode(PConstants.CENTER);
 
