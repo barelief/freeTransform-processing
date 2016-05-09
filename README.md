@@ -8,6 +8,29 @@ Transformations are automatically saved
 
 ![Ft](http://i.imgur.com/FxJHjKs.png)
 
+## Usage
+
+```
+import bare.utils.*;
+FreeTransform hello;
+PImage img;
+
+void setup() {
+  size(777, 500, P3D);
+  hello = new FreeTransform(this);
+  img = loadImage("moon.png");
+}
+
+void draw() 
+{
+  background(100);
+  hello.render(0, img);
+  hello.draw();
+}
+
+
+```
+
 ## Get the library 
 
 Download library here: [Releases](https://github.com/barelief/freeTransform-processing/releases)
