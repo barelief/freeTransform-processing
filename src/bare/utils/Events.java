@@ -209,6 +209,15 @@ public class Events {
 			case 'R':
 				parentTransform.resetAllQuads(); 
 				break;
+				
+			case 'a':
+				parentTransform.addQuad();
+				break;
+				
+			case 'x':
+				// parentTransform.removeQuad(parentTransform.selectedQuadId());
+				parentTransform.removeSelectedQuad();
+				break;
 
 			case 'd':
 				quad.debugMode = !quad.debugMode;

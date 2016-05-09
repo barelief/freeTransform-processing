@@ -84,7 +84,7 @@ public class Polygon {
 
 	boolean debugMode = false; // display / hide additional info (labels etc.)
 
-	int id; // id of this Quad oobject
+	public int id; // id of this Quad oobject
 	boolean isSelected; // quad isSelected when we do any transformations to it
 
 	Polygon(PApplet theParent, int id_) {
