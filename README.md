@@ -40,7 +40,7 @@ Copy it to your libraries forlder
 
 ## Need your feedback
 
-As for now, libray has been tested against Processing 3+ and windows 10. Please test with osx and Processing 2 and give feedback in [Issues](https://github.com/barelief/freeTransform-processing/issues). 
+As for now, libray has been tested against Processing 3+ and windows 10. Please test on other platforms give feedback in [Issues](https://github.com/barelief/freeTransform-processing/issues). 
 
 Feel free to optimize or add new features. 
 
