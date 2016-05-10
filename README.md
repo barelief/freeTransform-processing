@@ -2,7 +2,7 @@
 
 ## About
 
-Scale, rotate and variously transform textures (PImage, PGraphics). Transformations are automatically saved and loaded after restarting the sketch. Tested against Processing 3+ and windows 10
+Scale, rotate and variously transform textures (PImage, PGraphics). Transformations are automatically saved and loaded after restarting the sketch. Tested against Processing 3+ and windows
 
 ![Ft](http://i.imgur.com/FxJHjKs.png)
 
