@@ -87,22 +87,19 @@ public class FreeTransform {
 			myParent.cursor();
 		}
 	}
-
-	public void draw() {
-		update(); //
-		render(); //
+	
+	public void draw()
+	{
+		update();
+		render();
 	}
 
-	void update() {
+	public void update() {
 		// interate backwards to avoid out of bounds exceptions when removieng
 		// from arraylist
 		Iterator<Polygon> quadsIterator = quads.iterator();
 		while (quadsIterator.hasNext()) {
-			// System.out.println(quadsIterator.next());
-			// }
-			// for (int i = quads.size()-1; i >= 0; i--) {
-			// Polygon quad = quads.get(i); //
-
+			
 			Polygon quad = quadsIterator.next(); //
 			// update quad points (neede to transform textures)
 			quad.update();
@@ -113,10 +110,20 @@ public class FreeTransform {
 				cursors.render();
 			}
 		}
+		
+		// diplay help and debug information
+		showDebugInfo();
 	}
 
+	// display images loaded from json file
 	void render() {
-		showDebugInfo();
+		Iterator<Polygon> quadsIterator = quads.iterator();
+		while (quadsIterator.hasNext()) {
+		
+			Polygon quad = quadsIterator.next(); //
+			// update quad points (neede to transform textures)
+			quad.update();
+		}
 	}
 
 	// return the currently mouse selected quad
