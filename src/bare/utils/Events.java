@@ -13,6 +13,7 @@ package bare.utils;
 import processing.core.*;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
+import java.io.File;
 
 public class Events {
 
@@ -28,12 +29,11 @@ public class Events {
 		parentTransform.myParent.registerMethod("mouseEvent", this);
 		parentTransform.myParent.registerMethod("keyEvent", this);
 	}
-	
+
 	public void unregister() {
 		parentTransform.myParent.unregisterMethod("mouseEvent", this);
 		parentTransform.myParent.unregisterMethod("keyEvent", this);
 	}
-
 
 	public void mouseEvent(MouseEvent e) {
 
@@ -48,7 +48,7 @@ public class Events {
 				// isSelected
 				int focused = parentTransform.focusedQuadId();
 				Polygon quad = parentTransform.quads.get(focused);
-				//System.out.println("[notice ] state: " + quad.state);
+				// System.out.println("[notice ] state: " + quad.state);
 
 				switch (quad.state) {
 
@@ -145,26 +145,29 @@ public class Events {
 				releaseQuad();
 			// System.out.println("left mouse release");
 			break;
-			
+
 		case MouseEvent.WHEEL:
-			  // If SHIFT is pressed
-			  int selected = parentTransform.selectedQuadId();
-			  Polygon quad = parentTransform.quads.get(selected); 
+			// If SHIFT is pressed
+			int selected = parentTransform.selectedQuadId();
+			Polygon quad = parentTransform.quads.get(selected);
 
-			  if (quad.pointMode == 2) 
-			    scalingSensitivity = .01f;
-			  else scalingSensitivity = .05f;
-			  float wheelDirection = e.getCount();
-			  
-			  if (wheelDirection < 0) quad.scaleArea(1-scalingSensitivity);
-			  else quad.scaleArea(1+scalingSensitivity);
+			if (quad.pointMode == 2)
+				scalingSensitivity = .01f;
+			else
+				scalingSensitivity = .05f;
+			float wheelDirection = e.getCount();
 
-			  // update points after scaling area for next interactions
-			  // for (int i=0; i<amount; i++)
-			  // quad.updateGlobalPoints(i);
+			if (wheelDirection < 0)
+				quad.scaleArea(1 - scalingSensitivity);
+			else
+				quad.scaleArea(1 + scalingSensitivity);
 
-			  // reset locks and initial positions	
-			  quad.release();
+			// update points after scaling area for next interactions
+			// for (int i=0; i<amount; i++)
+			// quad.updateGlobalPoints(i);
+
+			// reset locks and initial positions
+			quad.release();
 			break;
 		}
 	}
@@ -205,15 +208,23 @@ public class Events {
 				parentTransform.resetQuad(); // reset
 				// quad.setupValues(quad.values); // load resetted values
 				break;
-				
-			case 'R':
-				parentTransform.resetAllQuads(); 
+			case 'l':
+				parentTransform.myParent.selectInput("Select an image to transform:", "fileSelected", null,
+						parentTransform);
 				break;
-				
+
+			case 'R':
+				parentTransform.resetAllQuads();
+				break;
+
 			case 'a':
 				parentTransform.addQuad();
 				break;
-				
+
+			// case 'p':
+			// parentTransform.loadPicture(selected);
+			// break;
+
 			case 'x':
 				// parentTransform.removeQuad(parentTransform.selectedQuadId());
 				parentTransform.removeSelectedQuad();
@@ -248,10 +259,10 @@ public class Events {
 				}
 				break;
 			case '+':
-				quad.scaleArea(1+scalingSensitivity);
+				quad.scaleArea(1 + scalingSensitivity);
 				break;
 			case '-':
-				quad.scaleArea(1-scalingSensitivity);
+				quad.scaleArea(1 - scalingSensitivity);
 				break;
 
 			case 1:

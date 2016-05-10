@@ -17,23 +17,30 @@ void setup() {
 void draw() 
 {
   background(100);
+  // render images loaded from within sketch
+  hello.render();
+  
+  // render images from code
   hello.render(0, bgImg);
   hello.render(1, img);
   hello.render(2, img2);
   hello.render(3, img3);
   hello.render(4, offscreen);
+  
+  // draw transform lines and points and debug info
   hello.draw();
+  
+  // update offscreen drawing 
   updateOffscreen();
-
+  
   if (!hello.isEnabled)
-    text("Press t to transform", 20, 20);
+    text("Press t to transform", 
+  20, 20);
 }
 
 void updateOffscreen()
 {
   offscreen.beginDraw();
-  //offscreen.background(127,20);
-  //offscreen.pushStyle();
   offscreen.clear();
   offscreen.fill(255, 50);
   offscreen.ellipse(60, 80, sin(frameCount*0.01)*50, sin(frameCount*0.01)*50);
@@ -41,7 +48,5 @@ void updateOffscreen()
   offscreen.fill(0);
   offscreen.text("offscreen object", 50, 50);
   offscreen.stroke(255);
-  //offscreen.line(0, 0, 200, 200);
-  //offscreen.popStyle();
   offscreen.endDraw();
 }

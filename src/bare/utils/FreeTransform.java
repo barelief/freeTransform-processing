@@ -18,6 +18,8 @@ package bare.utils;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 import processing.event.KeyEvent;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -37,6 +39,10 @@ public class FreeTransform {
 	public final static String VERSION = "##library.prettyVersion##";
 
 	ArrayList<Polygon> quads;
+
+	// images from json to be transformed
+	ArrayList<Image> images;
+
 	int selectedQuad;
 	boolean helpMode = false; //
 	JSONArray quadData;
@@ -62,7 +68,7 @@ public class FreeTransform {
 		this.myParent = theParent;
 		welcome();
 		quads = new ArrayList<Polygon>();
-
+		images = new ArrayList<Image>();
 		// load cooradinates for all quads points from external JSON file
 		loadValues();
 
@@ -87,11 +93,10 @@ public class FreeTransform {
 			myParent.cursor();
 		}
 	}
-	
-	public void draw()
-	{
+
+	public void draw() {
 		update();
-		render();
+		// render();
 	}
 
 	public void update() {
@@ -99,7 +104,7 @@ public class FreeTransform {
 		// from arraylist
 		Iterator<Polygon> quadsIterator = quads.iterator();
 		while (quadsIterator.hasNext()) {
-			
+
 			Polygon quad = quadsIterator.next(); //
 			// update quad points (neede to transform textures)
 			quad.update();
@@ -110,19 +115,18 @@ public class FreeTransform {
 				cursors.render();
 			}
 		}
-		
+
 		// diplay help and debug information
 		showDebugInfo();
 	}
 
 	// display images loaded from json file
-	void render() {
-		Iterator<Polygon> quadsIterator = quads.iterator();
-		while (quadsIterator.hasNext()) {
-		
-			Polygon quad = quadsIterator.next(); //
-			// update quad points (neede to transform textures)
-			quad.update();
+	public void render() {
+		for (int i = 0; i < quads.size(); i++) {
+			// if image path exists
+			if (!images.get(i).path.equals(""))
+				// display this image
+				render(i, images.get(i).img);
 		}
 	}
 
@@ -158,16 +162,23 @@ public class FreeTransform {
 		myParent.stroke(255);
 
 		if (isEnabled) {
-			myParent.text("Transforming [" + quads.size() + " quads][" + selectedQuadId()+"]",20, 20);
+			myParent.text("Transforming [" + quads.size() + " quads][" + selectedQuadId() + "]", 20, 20);
 			if (!helpMode)
 				myParent.text("[h] for help\n[t] to disable transform", 20, 40);
 			else
 				myParent.text("mode: " + quad.state + "\nMOUSESCROLL or +/- keyboard to zoom in/out\n"
 						+ "hold CTRL to free transform\n" + "hold SHIFT to scale proportionally\n"
-						+ /* "↑ ↓ ← → to update w/ keyboard (disabled)\n" + */ "press H to hide this help info"
-						// + "\nd for debug\n" + "r to reset selected quad \nR to reset all quads"
+						+ /* "↑ ↓ ← → to update w/ keyboard (disabled)\n" + */ "h to hide this help info"
+						+ "\nl to load image into selected quad"
+					    + "\nr to reset selected quad \nR to reset all quads"
 						+ "\na to add new quad\n" + "x to remove selected quad" + "\nframe rate: "
 						+ (int) myParent.frameRate, 20, 40);
+
+			/*
+			 * // display path names for Images for (int i = 0; i <
+			 * quads.size(); i++) { myParent.text(images.get(i).path, 20, 50 + i
+			 * * 20); }
+			 */
 		}
 	}
 
@@ -181,6 +192,10 @@ public class FreeTransform {
 			// set the id of the quad
 			pointToSave.setInt("id", i);
 
+			// save picture path to json
+			String path = images.get(i).path;
+			pointToSave.setString("picture", path);
+
 			// load particular quad
 			Polygon quad = quads.get(i);
 
@@ -192,7 +207,7 @@ public class FreeTransform {
 		}
 
 		myParent.saveJSONArray(quadData, "data/data.json");
-		// System.out.println("[notice ] Values saved to disk...");
+		System.out.println("[notice ] Values saved to disk...");
 	}
 
 	void loadPoints() {
@@ -222,7 +237,6 @@ public class FreeTransform {
 
 			// if external file does not exist, make a default point arrangement
 			// as in resetPosition();
-			// resetPosition();
 			quadData = createDefaultValues();
 
 			// create new json file
@@ -240,6 +254,7 @@ public class FreeTransform {
 
 		// set first quads id to 0
 		pointToSave.setInt("id", 0);
+		pointToSave.setString("picture", "");
 
 		// create temporal Quad to reset it's position points
 		Polygon quad = new Polygon(myParent, 0);
@@ -268,10 +283,11 @@ public class FreeTransform {
 	public void removeQuad(int quadIndex) {
 		// quads.remove(quadIndex);
 
-		// prevent from removing the last quad (may should make the option to have 0 quads?)
+		// prevent from removing the last quad (may should make the option to
+		// have 0 quads?)
 		if (quadIndex < quads.size() && quads.size() > 1) {
 			quads.remove(quadIndex);
-			
+			images.remove(quadIndex);
 			System.out.println("[notice ] removed quad with id " + quadIndex);
 			recalcID();
 		}
@@ -297,6 +313,14 @@ public class FreeTransform {
 	void addQuad() {
 		int quadAmount = quads.size();
 		quads.add(new Polygon(myParent, quadAmount));
+		images.add(new Image("", this));
+		PImage img = images.get(quadAmount).img;
+		JSONObject pointToSave = new JSONObject();
+		pointToSave.setString("picture", "");
+		quadData.setJSONObject(quadAmount, pointToSave);
+		// quadData.app
+		img = myParent.loadImage(quadData.getJSONObject(quadAmount).getString("picture"));
+
 		Polygon quad = quads.get(quadAmount); //
 		quad.repositionQuad(new PVector(myParent.width / 2, myParent.height / 2));
 
@@ -340,8 +364,22 @@ public class FreeTransform {
 			// create brand new quad object, set id to i
 			quads.add(new Polygon(myParent, i));
 
+			// create brand new PImage object
+			images.add(new Image("", this));
+
 			// load particular quad
 			Polygon quad = quads.get(i);
+
+			// load particular img
+			Image picture = images.get(i);
+
+			picture.path = values.getJSONObject(i).getString("picture");
+
+			if (!picture.path.equals("")) {
+				System.out.println("[notice ] loading Image[" + i + "]: " + picture.path);
+				// load image to to img object
+				picture.loadImage();
+			}
 
 			// i - quad id, j - no. of point of this quad
 			for (int j = 0; j < quad.amount; j++) {
@@ -360,12 +398,12 @@ public class FreeTransform {
 
 	// translate image texture with quad points
 	public void render(int id, PImage img) {
-		
 
 		// prevent from rendering if there are no quads
 		if (quads.size() > 0) {
-			// prevent from indexOutOfBoundException if main code has render id  bigger than quadAmount
-			id = PApplet.constrain(id, 0, quads.size()-1);
+			// prevent from indexOutOfBoundException if main code has render id
+			// bigger than quadAmount
+			id = PApplet.constrain(id, 0, quads.size() - 1);
 
 			Polygon quad = quads.get(id);
 			myParent.noStroke();
@@ -381,12 +419,13 @@ public class FreeTransform {
 
 	// translate PGraphics object texture with quad points
 	public void render(int id, PGraphics img) {
-		
+
 		// prevent from rendering if there are no quads
 		if (quads.size() > 0) {
-			// avoid indexOutOfBoundException if main code has render id bigger than quadAmount
-			id = PApplet.constrain(id, 0, quads.size()-1);
-			
+			// avoid indexOutOfBoundException if main code has render id bigger
+			// than quadAmount
+			id = PApplet.constrain(id, 0, quads.size() - 1);
+
 			Polygon quad = quads.get(id);
 			myParent.noStroke();
 			myParent.beginShape();
@@ -399,7 +438,7 @@ public class FreeTransform {
 		}
 	}
 
-	// Keyboard inputs
+	// Keyboard inputs aka "press t to transform on/off"
 	public void keyEvent(KeyEvent e) {
 
 		switch (e.getAction()) {
@@ -447,6 +486,20 @@ public class FreeTransform {
 	 */
 	public static String version() {
 		return VERSION;
+	}
+
+	public void fileSelected(File selection) {
+		if (selection == null) {
+			System.out.println("Window was closed or the user hit cancel.");
+		} else {
+			System.out.println("Image selected " + selection.getAbsolutePath() + " into quad no. " + selectedQuadId());
+
+			// load picture into parentTransform.images.get(id)
+			Image picture = images.get(selectedQuadId());
+			picture.img = myParent.loadImage(selection.getAbsolutePath());
+			picture.path = selection.getAbsolutePath();
+			savePoints();
+		}
 	}
 
 }
