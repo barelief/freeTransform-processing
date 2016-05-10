@@ -106,26 +106,18 @@ public class Line {
 	}
 
 	void debugPointColors() {
-		if (pointCloseToLine() && !quad.dragLock && quad.state != State.DRAG_FREE_POINT) // if
-																							// mouse
-																							// is
-																							// close
-																							// enough
-		{
-			lineColor = myParent.color(255, 255, 0); // then draw yellow
-			quad.selectedLine = id; // if this line is being selected make
-									// global selectedLine from this id
-		} else
-			lineColor = 0; // else draw black (if mouse is far from line)
+		// if mouse is close enough
+		if (pointCloseToLine() && !quad.dragLock && quad.state != State.DRAG_FREE_POINT) {
+			// then draw yellow
+			lineColor = myParent.color(255, 255, 0);
 
-		if (quad.selectedLine == id && quad.dragLock && quad.state == State.DRAG_FREE_LINE) // darw
-																							// green
-																							// line
-																							// when
-																							// dragging
-																							// and
-																							// while
-																							// State.EDGE
+			// if this line is being selected make // global selectedLine from
+			// this id
+			quad.selectedLine = id;
+		} else
+			lineColor = 0; // else draw black (if mouse is far from line) darw
+							// green line when dragging and while State.EDGE
+		if (quad.selectedLine == id && quad.dragLock && quad.state == State.DRAG_FREE_LINE)
 			lineColor = myParent.color(0, 255, 0);
 
 		myParent.stroke(lineColor);

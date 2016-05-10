@@ -39,7 +39,7 @@ public class FreeTransform {
 	ArrayList<Polygon> quads;
 	int selectedQuad;
 	boolean helpMode = false; //
-	JSONArray coordinateValues;
+	JSONArray quadData;
 	public boolean isEnabled = false;
 
 	Events events; //
@@ -174,7 +174,7 @@ public class FreeTransform {
 	// saves current points coordinates to disk
 	void savePoints() {
 		// nunullinam coordinates
-		coordinateValues = new JSONArray();
+		quadData = new JSONArray();
 
 		for (int i = 0; i < quads.size(); i++) {
 			JSONObject pointToSave = new JSONObject();
@@ -188,10 +188,10 @@ public class FreeTransform {
 				pointToSave.setInt("x" + j, (int) quad.point[j].position.x);
 				pointToSave.setInt("y" + j, (int) quad.point[j].position.y);
 			}
-			coordinateValues.setJSONObject(i, pointToSave);
+			quadData.setJSONObject(i, pointToSave);
 		}
 
-		myParent.saveJSONArray(coordinateValues, "data/data.json");
+		myParent.saveJSONArray(quadData, "data/data.json");
 		// System.out.println("[notice ] Values saved to disk...");
 	}
 
@@ -209,11 +209,11 @@ public class FreeTransform {
 
 	// load polygon points previously saved to disk
 	void loadValues() {
-		coordinateValues = new JSONArray();
+		quadData = new JSONArray();
 
 		// try loading coordinates of polygon points from an external file
 		try {
-			coordinateValues = myParent.loadJSONArray("data.json");
+			quadData = myParent.loadJSONArray("data.json");
 			// assign loaded values to polygon variables
 
 		} catch (Exception e) {
@@ -223,15 +223,15 @@ public class FreeTransform {
 			// if external file does not exist, make a default point arrangement
 			// as in resetPosition();
 			// resetPosition();
-			coordinateValues = createDefaultValues();
+			quadData = createDefaultValues();
 
 			// create new json file
-			myParent.saveJSONArray(coordinateValues, "data/data.json");
+			myParent.saveJSONArray(quadData, "data/data.json");
 			System.out.println("[notice ] data/data.json created with one quad points values");
 		}
 
 		// quadAmount = coordinateValues.size();
-		setupValues(coordinateValues);
+		setupValues(quadData);
 	}
 
 	JSONArray createDefaultValues() {
