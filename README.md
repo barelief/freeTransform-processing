@@ -2,9 +2,7 @@
 
 ## About
 
-Scale, rotate and variously transform textures (PImage, PGraphics) 
-
-Transformations are automatically saved
+Scale, rotate and variously transform textures (PImage, PGraphics). Transformations are automatically saved and loaded after restarting the sketch. Tested against Processing 3+ and windows
 
 ![Ft](http://i.imgur.com/FxJHjKs.png)
 
@@ -41,6 +39,8 @@ Copy it to your libraries forlder
 ~~or use built-in Contribution Manager [screenshot link]~~
 
 ## Need your feedback
+
+As for now, libray has been tested against Processing 3+ and windows 10. Please test on other platforms give feedback in [Issues](https://github.com/barelief/freeTransform-processing/issues). 
 
 Feel free to optimize or add new features. 
 
