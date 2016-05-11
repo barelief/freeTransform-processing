@@ -8,7 +8,7 @@ name = Free Transform
 authors = [Bartosh Polonski](http://bpolonski.com)
 
 # A web page for your Library, NOT a direct link to where to download it.
-url = https://github.com/barelief/freeTransform-processing
+url = https://github.com/barelief/freeTransform-processing/raw/master/web/FreeTransform.zip
 
 # The category (or categories) of your Library, must be from the following list:
 #   "3D"            "Animation"     "Compilations"      "Data"          
