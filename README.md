@@ -58,7 +58,7 @@ Thank you!
 * ~~0.1 transform one object~~
 * ~~0.2 transform ArrayList of objects~~
 * ~~0.3 save coordinates of ArrayList quads~~
-* 0.4 add/remove Quad interactively (+interactive image loading)
+* ~~0.4 add/remove Quad interactively (+interactive image loading)~~
 * 0.5 homography
 * 0.7 snapping
 * 0.8 select multiple (also scale/move/rotate) - maybe..
