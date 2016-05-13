@@ -5,7 +5,7 @@
  * to/from external json file
  * 
  * @author Bartosh Polonski
- * @version 0.3.0
+ * @version 0.4
  * @since 2016-04-30
  * 
  * @example Hello 
@@ -30,23 +30,30 @@ public class FreeTransform {
 	// myParent is a reference to the parent sketch
 	PApplet myParent;
 
+	// mouse input routines
 	PVector P; // user input vector (mouse)
 	PVector beginP; // inial P position (before making offset)
 	PVector offsetP; // offset made by moving P from initial position
 
-	int myVariable = 0;
-
 	public final static String VERSION = "##library.prettyVersion##";
-
+	
+	// main quads whicha re being transformed
 	ArrayList<Polygon> quads;
 
 	// images from json to be transformed
 	ArrayList<Image> images;
-
+	
+	// currently selected quad
 	int selectedQuad;
-	boolean helpMode = false; //
+	
+	// are we displaying any help and debug info?
+	boolean helpMode = false; 
+	
+	// temporary load JSON data
 	JSONArray quadData;
-	public boolean isEnabled = false;
+	
+	// are we transforming quads od not?
+	public boolean isTransformEnabled = false;
 
 	Events events; //
 
@@ -65,15 +72,24 @@ public class FreeTransform {
 	 */
 
 	public FreeTransform(PApplet theParent) {
+		// set PApplet parent 
 		this.myParent = theParent;
+		
+		// display library info. version etc. 
 		welcome();
+		
+		// create quads ArrayList
 		quads = new ArrayList<Polygon>();
+		
+		// create images ArrayList
 		images = new ArrayList<Image>();
 		// load cooradinates for all quads points from external JSON file
 		loadValues();
 
-		// enable mouse and key events (unregistered by default)
+		// enable mouse and key events for isTransformEnabled=true mode (unregistered by default)
 		events = new Events(this);
+		
+		// enable 't' key for dis/enabling transform
 		this.myParent.registerMethod("keyEvent", this);
 		System.out.println("[notice ] Press t to enable/disable Free Transform.. ");
 
@@ -82,19 +98,23 @@ public class FreeTransform {
 		cursors.loadCursors(theParent, this);
 	}
 
+	// enable / disable quad transformation 
 	public void toggleTransform() {
-		isEnabled = !isEnabled;
+		isTransformEnabled = !isTransformEnabled;
 
 		// enable or disable transformation mouse / key events
-		if (isEnabled)
+		if (isTransformEnabled)
 			events.register();
 		else {
 			events.unregister();
+			// display cursor
 			myParent.cursor();
 		}
 	}
 
+	// update FreeTransform object
 	public void draw() {
+		// update quads (not render, but update)
 		update();
 		// render();
 	}
@@ -110,8 +130,11 @@ public class FreeTransform {
 			quad.update();
 
 			// display quad ,cursors
-			if (isEnabled) {
-				quad.render(); //
+			if (isTransformEnabled) {
+				// dislay quads (edges, points, etc.)
+				quad.render(); 
+				
+				// display cursors
 				cursors.render();
 			}
 		}
@@ -158,10 +181,11 @@ public class FreeTransform {
 
 	// display useful help and debug info
 	void showDebugInfo() {
+		// get quads object
 		Polygon quad = quads.get(selectedQuadId()); //
 		myParent.stroke(255);
 
-		if (isEnabled) {
+		if (isTransformEnabled) {
 			myParent.text("Transforming [" + quads.size() + " quads][" + selectedQuadId() + "]", 20, 20);
 			if (!helpMode)
 				myParent.text("[h] for help\n[t] to disable transform", 20, 40);
@@ -184,9 +208,10 @@ public class FreeTransform {
 
 	// saves current points coordinates to disk
 	void savePoints() {
-		// nunullinam coordinates
+		// init quad Data 
 		quadData = new JSONArray();
-
+		
+		//read from quads and images ArrayLists and save it to quadData
 		for (int i = 0; i < quads.size(); i++) {
 			JSONObject pointToSave = new JSONObject();
 			// set the id of the quad
@@ -206,20 +231,9 @@ public class FreeTransform {
 			quadData.setJSONObject(i, pointToSave);
 		}
 
+		// save data to disk
 		myParent.saveJSONArray(quadData, "data/data.json");
-		System.out.println("[notice ] Values saved to disk...");
-	}
-
-	void loadPoints() {
-		for (int i = 0; i < quads.size(); i++) {
-			// load particular quad
-			Polygon quad = quads.get(i);
-
-			for (int j = 0; j < quad.amount; j++) {
-			}
-		}
-
-		System.out.println("[notice ] Values loaded from disk...");
+		// System.out.println("[notice ] Values saved to disk...");
 	}
 
 	// load polygon points previously saved to disk
@@ -247,7 +261,8 @@ public class FreeTransform {
 		// quadAmount = coordinateValues.size();
 		setupValues(quadData);
 	}
-
+	
+	// create deafault quad positions (arranged hoizontally along the height)
 	JSONArray createDefaultValues() {
 		JSONArray defaultValues = new JSONArray();
 		JSONObject pointToSave = new JSONObject();
@@ -274,6 +289,7 @@ public class FreeTransform {
 		return defaultValues;
 	}
 
+	// remove last quad from ArrayList
 	public void removeLastQuad() {
 		if (quads.size() > 0)
 			removeQuad(quads.size() - 1);
@@ -281,24 +297,30 @@ public class FreeTransform {
 
 	// remove selected quad
 	public void removeQuad(int quadIndex) {
-		// quads.remove(quadIndex);
 
 		// prevent from removing the last quad (may should make the option to
 		// have 0 quads?)
 		if (quadIndex < quads.size() && quads.size() > 1) {
+			
+			// remove quad from ArrayList
 			quads.remove(quadIndex);
+			
+			// remove images object related to quads object
 			images.remove(quadIndex);
+			
 			System.out.println("[notice ] removed quad with id " + quadIndex);
+			
+			// when one of the quads was removed, recalculated quad ids, so there are no gaps between numbering
 			recalcID();
 		}
 	}
 
+	// remove currently selected quad 
 	void removeSelectedQuad() {
 		removeQuad(selectedQuadId());
-		// recalcID();
 	}
 
-	// recalculate ids when one of the quads was removed from array
+	// recalculate ids when one of the quads was removed from array (so there are no gaps between numbering)
 	void recalcID() {
 		for (int i = 0; i < quads.size(); i++) {
 			Polygon quad = quads.get(i); //
@@ -308,25 +330,39 @@ public class FreeTransform {
 		// System.out.println("[notice ] ids resorted");
 	}
 
-	// add new Quad to the array (quad is saved to json file automatically, upon
+	// add new quad to the ArrayList (quad is saved to json file automatically, upon
 	// keyrelease (see Events.java:KeyEvent.RELEASE)
 	void addQuad() {
+		// id for the new quad
 		int quadAmount = quads.size();
+		
+		// add new quad in quads ArrayList
 		quads.add(new Polygon(myParent, quadAmount));
+		
+		// add new Image in images ArrayList
 		images.add(new Image("", this));
+		
+		// get img from Image
 		PImage img = images.get(quadAmount).img;
+		
+		// set default img path to ""
 		JSONObject pointToSave = new JSONObject();
 		pointToSave.setString("picture", "");
 		quadData.setJSONObject(quadAmount, pointToSave);
-		// quadData.app
+		
+		// load image from 
 		img = myParent.loadImage(quadData.getJSONObject(quadAmount).getString("picture"));
-
+		
+		// get quad object
 		Polygon quad = quads.get(quadAmount); //
+		
+		// new quad is position in the midle of the screen
 		quad.repositionQuad(new PVector(myParent.width / 2, myParent.height / 2));
 
+		// reset quad size
 		resetQuad(quadAmount);
+		
 		System.out.println("[notice ] added new quad with id " + quadAmount);
-		// quadAmount++;
 	}
 
 	// reset all quads to their default positions
@@ -342,7 +378,7 @@ public class FreeTransform {
 		}
 	}
 
-	// reset quadId quad to its default position
+	// reset quad to its default size
 	void resetQuad(int quadId) {
 		Polygon quad = quads.get(quadId); //
 		quad.reset(defaultSize);
@@ -357,7 +393,7 @@ public class FreeTransform {
 	// get loaded values from disk
 	// and assign them to the polygon class points
 	void setupValues(JSONArray values) {
-		System.out.println("[notice ] setting up values..");
+		// System.out.println("[notice ] setting up values..");
 		// load points form external file
 
 		for (int i = 0; i < values.size(); i++) {
@@ -372,7 +408,8 @@ public class FreeTransform {
 
 			// load particular img
 			Image picture = images.get(i);
-
+			
+			// load path into Image.path from json object
 			picture.path = values.getJSONObject(i).getString("picture");
 
 			if (!picture.path.equals("")) {
@@ -383,6 +420,7 @@ public class FreeTransform {
 
 			// i - quad id, j - no. of point of this quad
 			for (int j = 0; j < quad.amount; j++) {
+				// set the main quad poin values from json
 				quad.point[j] = new Point(myParent, values.getJSONObject(i).getInt("x" + j),
 						values.getJSONObject(i).getInt("y" + j), j, quad);
 				// for example "y0": 266, "x0": 422... etc.
@@ -396,7 +434,7 @@ public class FreeTransform {
 		return quad;
 	}
 
-	// translate image texture with quad points
+	// render image as a texture within quad points
 	public void render(int id, PImage img) {
 
 		// prevent from rendering if there are no quads
@@ -404,8 +442,11 @@ public class FreeTransform {
 			// prevent from indexOutOfBoundException if main code has render id
 			// bigger than quadAmount
 			id = PApplet.constrain(id, 0, quads.size() - 1);
-
+			
+			// get quad object
 			Polygon quad = quads.get(id);
+			
+			// render to screen
 			myParent.noStroke();
 			myParent.beginShape();
 			myParent.texture(img);
@@ -426,7 +467,10 @@ public class FreeTransform {
 			// than quadAmount
 			id = PApplet.constrain(id, 0, quads.size() - 1);
 
+			// get quad object
 			Polygon quad = quads.get(id);
+			
+			// render to screen
 			myParent.noStroke();
 			myParent.beginShape();
 			myParent.texture(img);
@@ -475,6 +519,7 @@ public class FreeTransform {
 		}
 	}
 
+	// Display library info after initiating library object
 	private void welcome() {
 		System.out.println("##library.name## ##library.prettyVersion## by ##author##");
 	}
@@ -488,7 +533,10 @@ public class FreeTransform {
 		return VERSION;
 	}
 
+	// function to execute after selecting image file from dialog
 	public void fileSelected(File selection) {
+		
+		// if nothing was selected
 		if (selection == null) {
 			System.out.println("Window was closed or the user hit cancel.");
 		} else {
@@ -498,6 +546,8 @@ public class FreeTransform {
 			Image picture = images.get(selectedQuadId());
 			picture.img = myParent.loadImage(selection.getAbsolutePath());
 			picture.path = selection.getAbsolutePath();
+			
+			// save everything to disk
 			savePoints();
 		}
 	}
