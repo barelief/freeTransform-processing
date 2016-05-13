@@ -17,8 +17,6 @@ void setup() {
 void draw() 
 {
   background(100);
-  // render images loaded from within sketch
-  hello.render();
   
   // render images from code
   hello.render(0, bgImg);
@@ -27,13 +25,16 @@ void draw()
   hello.render(3, img3);
   hello.render(4, offscreen);
   
+  // render images loaded from within sketch
+  hello.render();
+  
   // draw transform lines and points and debug info
   hello.draw();
   
   // update offscreen drawing 
   updateOffscreen();
   
-  if (!hello.isEnabled)
+  if (!hello.isTransformEnabled)
     text("Press t to transform", 
   20, 20);
 }
