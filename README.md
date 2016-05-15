@@ -33,12 +33,12 @@ void draw()
 
 ## Get the library 
 
-Download library here: [Releases](https://github.com/barelief/freeTransform-processing/releases)
+1. Download library here: [Releases](https://github.com/barelief/freeTransform-processing/releases) 
+2. copy it to your Processing libraries forlder 
 
-## How to use
+or 
 
-Copy it to your libraries forlder 
-~~or use built-in Contribution Manager [screenshot link]~~
+use built-in [PDE Contribution Manager](http://i.imgur.com/DlSQZ4B.png)
 
 ## Need your feedback
 
@@ -61,7 +61,7 @@ Thank you!
 * ~~0.2 transform ArrayList of objects~~
 * ~~0.3 save coordinates of ArrayList quads~~
 * ~~0.4 add/remove Quad interactively (+interactive image loading)~~
-* 0.5 homography
+* 0.5 homography [[Issue #9](https://github.com/barelief/freeTransform-processing/issues/9)]
 * 0.7 snapping
 * 0.8 select multiple (also scale/move/rotate) - maybe..
 * 0.9 ctrl-Z
