@@ -6,8 +6,6 @@ Scale, rotate and variously transform textures (PImage, PGraphics). Transformati
 
 ![Ft](http://i.imgur.com/FxJHjKs.png)
 
-https://vid.me/5Psa
-
 ## Usage
 
 ```
